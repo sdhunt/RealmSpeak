@@ -1,16 +1,16 @@
-/* 
+/*
  * RealmSpeak is the Java application for playing the board game Magic Realm.
  * Copyright (c) 2005-2015 Robin Warren
  * E-mail: robin@dewkid.com
- * 
+ *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the License,
  * or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
  * implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with this program. If not, see
  *
  * http://www.gnu.org/licenses/
@@ -47,23 +47,23 @@ public class HostGameSetupDialog extends AggressiveDialog {
 	private static final String HOUSE3_RULES_TAB = "More House";
 	private static final String TE_RULES_TAB = "3rd Edition";
 	private static final String RANDOM_GEN_TAB = "# Generators";
-	
+
 	private static final Border TOP_LINE = BorderFactory.createMatteBorder(2,0,0,0,Color.blue);
-	
+
 	public static final GameVariant[] GAME_VERSION = {
 		GameVariant.ORIGINAL_GAME_VARIANT,
 		GameVariant.PRUITTS_GAME_VARIANT,
 		GameVariant.EXP1_GAME_VARIANT,
 	};
-	
+
 	private boolean loadingPrefs = false;
 	private ControlNotifier notifier;
 	protected OptionSetControl optionSetControl;
-	
+
 	protected GameData gameData;
 	protected HostPrefWrapper hostPrefs;
 	protected GameOptionPane optionPane;
-	
+
 	protected JTextField gamePort;
 	protected JTextField hostName;
 	protected JTextField hostEmail;
@@ -74,21 +74,21 @@ public class HostGameSetupDialog extends AggressiveDialog {
 	protected JTextField gamePass;
 	protected JRadioButton[] gameVariants;
 	protected JLabel disableReqVpsWarning;
-	
+
 	protected JCheckBox anyVpsAllowedOption;
-	
+
 	protected Box timeLimitLine;
 	protected Box vpAssignmentLine;
 	protected IntegerField numberMonthsToPlay;
 	protected IntegerField vpsToAchieve;
-	
+
 	protected VictoryConditionButton vpEndlessOption;
 	protected VictoryConditionButton vpTimedOption;
 	protected VictoryConditionButton vpSuddenDeathOption;
 	protected VictoryConditionButton questBoqOption;
 	protected VictoryConditionButton questQtrOption;
 	protected VictoryConditionButton questGuildsOption;
-	
+
 	protected JCheckBox disableBattles;
 	protected JLabel disableCombatWarning;
 	protected JCheckBox autosaveEnabled;
@@ -96,20 +96,20 @@ public class HostGameSetupDialog extends AggressiveDialog {
 	protected JCheckBox includeExpansionSpells;
 	protected JCheckBox includeNewSpells;
 	protected JCheckBox switchDaySpells;
-	
+
 	protected JCheckBox multiBoardEnabled;
 	protected JSlider multiBoardCount;
-	
+
 	protected JRadioButton boardAutoSetup;
 	protected JSlider minMapRating;
 	protected JRadioButton boardPlayerSetup;
-	
+
 	protected JComboBox startingSeason;
 	protected JCheckBox useWeather;
 	protected JLabel optionalWeatherWarning;
-	
+
 	protected JButton defaultButton;
-	
+
 	public void loadPrefsFromData() {
 		loadingPrefs = true;
 		gamePort.setText(String.valueOf(hostPrefs.getGamePort()));
@@ -196,11 +196,11 @@ public class HostGameSetupDialog extends AggressiveDialog {
 		boardAutoSetup.setSelected(prefMan.getBoolean("boardAutoSetup"));
 		boardPlayerSetup.setSelected(prefMan.getBoolean("boardPlayerSetup"));
 		mixExpansionTilesEnabled.setSelected(prefMan.getBoolean("mixExpansionTilesEnabled"));
-		
+
 		includeExpansionSpells.setSelected(prefMan.getBoolean("includeExpansionSpells"));
 		includeNewSpells.setSelected(prefMan.getBoolean("includeNewSpells"));
 		switchDaySpells.setSelected(prefMan.getBoolean("switchDaySpells"));
-		
+
 		multiBoardEnabled.setSelected(prefMan.getBoolean("multiBoardEnabled"));
 		multiBoardCount.setValue(prefMan.getInt("multiBoardCount"));
 		minMapRating.setValue(prefMan.getInt("minMapRating"));
@@ -259,7 +259,7 @@ public class HostGameSetupDialog extends AggressiveDialog {
 		prefMan.set(Constants.QST_BOOK_OF_QUESTS,questBoqOption.isSelected());
 		prefMan.set(Constants.QST_QUEST_CARDS,questQtrOption.isSelected());
 		prefMan.set(Constants.QST_GUILD_QUESTS,questGuildsOption.isSelected());
-		
+
 		for (Iterator i=optionPane.getGameOptionKeys().iterator();i.hasNext();) {
 			String key = (String)i.next();
 			prefMan.set(key,optionPane.getOption(key));
@@ -294,10 +294,10 @@ public class HostGameSetupDialog extends AggressiveDialog {
 		}
 		return ret;
 	}
-	
+
 	protected JButton startHost;
 	protected JButton cancel;
-	
+
 	protected boolean didStart = false;
 	protected boolean editMode;
 
@@ -308,7 +308,7 @@ public class HostGameSetupDialog extends AggressiveDialog {
 		super(frame,title,true);
 		this.gameData = data;
 		this.editMode = editMode;
-		
+
 		// Now, see if there isn't already a host preferences object
 		hostPrefs = HostPrefWrapper.findHostPrefs(gameData);
 		if (hostPrefs==null) { // This is NOT redundant, so don't delete it!
@@ -316,7 +316,7 @@ public class HostGameSetupDialog extends AggressiveDialog {
 			gameObject.setName("Host Preferences");
 			hostPrefs = new HostPrefWrapper(gameObject);
 		}
-		
+
 		initComponents();
 		updateControls();
 	}
@@ -336,9 +336,9 @@ public class HostGameSetupDialog extends AggressiveDialog {
 		numberMonthsToPlay.setEnabled(editMode);
 		vpsToAchieve.setEnabled(editMode);
 		anyVpsAllowedOption.setEnabled(editMode);
-		
+
 		questGuildsOption.setEnabled(getSelectedGameVariant().getTitle()=="Expansion One");
-		
+
 		if (!editMode) {
 			vpEndlessOption.setEnabled(false);
 			vpTimedOption.setEnabled(false);
@@ -347,7 +347,7 @@ public class HostGameSetupDialog extends AggressiveDialog {
 			questQtrOption.setEnabled(false);
 			questGuildsOption.setEnabled(false);
 		}
-		
+
 		disableBattles.setEnabled(editMode);
 		autosaveEnabled.setEnabled(editMode);
 		boardAutoSetup.setEnabled(editMode);
@@ -367,7 +367,7 @@ public class HostGameSetupDialog extends AggressiveDialog {
 		setSize(850,750);
 		setLocationRelativeTo(null);
 		setModal(true);
-		
+
 		notifier = new ControlNotifier();
 		notifier.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ev) {
@@ -376,9 +376,9 @@ public class HostGameSetupDialog extends AggressiveDialog {
 				}
 			}
 		});
-		
+
 		int hostOptionBoxWidth = 200;
-		
+
 		Box box;
 		UniformLabelGroup group = new UniformLabelGroup();
 		Box hostingBox = Box.createVerticalBox();
@@ -439,14 +439,14 @@ public class HostGameSetupDialog extends AggressiveDialog {
 			box.add(Box.createHorizontalGlue());
 		hostingBox.add(box);
 		hostingBox.setBorder(BorderFactory.createTitledBorder("Hosting Options"));
-		
+
 		JPanel mainBox = new JPanel(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
-		
+
 		c.gridy=0;
 		c.weighty = 0.10;
 		mainBox.add(hostingBox,c);
-		
+
 		JPanel boardSetupSplit = new JPanel(new BorderLayout());
 		boardSetupSplit.add(buildGamePlayBox(group),"West");
 		boardSetupSplit.add(buildBoardSetupBox(group),"Center");
@@ -455,27 +455,27 @@ public class HostGameSetupDialog extends AggressiveDialog {
 		c.gridy=1;
 		c.weighty = 0.10;
 		mainBox.add(boardSetupSplit,c);
-		
+
 		c.gridy=2;
 		c.weighty = 1.00;
 		c.ipady = 40;
 		c.fill = GridBagConstraints.HORIZONTAL;
 		mainBox.add(buildVictoryBox(),c);
-		
+
 		JPanel mainPanel = new JPanel(new BorderLayout());
 		mainPanel.add(mainBox,"Center");
-			
+
 		optionPane = createOptionPane(editMode,mainPanel);
-		
+
 		optionPane.buildPane();
-		
+
 		setLayout(new BorderLayout());
-		
+
 		optionSetControl = new OptionSetControl(this);
 		add(optionSetControl,"North");
-		
+
 		add(optionPane,"Center");
-		
+
 			box = Box.createHorizontalBox();
 				defaultButton = new JButton("Use Defaults");
 				defaultButton.addActionListener(new ActionListener() {
@@ -507,35 +507,35 @@ public class HostGameSetupDialog extends AggressiveDialog {
 				});
 			box.add(startHost);
 			box.add(Box.createHorizontalGlue());
-			
+
 		add(box,"South");
-		
-		getRootPane().setDefaultButton(startHost);		
-		
+
+		getRootPane().setDefaultButton(startHost);
+
 		setupDefaults();
 		updateWarnings();
 	}
 	private JPanel buildVictoryBox() {
 		JPanel panel = new JPanel(new BorderLayout());
-		
+
 		Font font = new Font("Dialog",Font.BOLD,14);
 		JPanel headerPanel = new JPanel(new GridLayout(2,1));
 		JLabel vpLabel = new JLabel("VPs",JLabel.CENTER);
-		vpLabel.setUI(new VerticalLabelUI(false));
+		vpLabel.setUI(new VerticalLabelUI());
 		vpLabel.setBorder(BorderFactory.createRaisedBevelBorder());
 		vpLabel.setFont(font);
 		vpLabel.setOpaque(true);
 		vpLabel.setBackground(new Color(100,255,100));
 		headerPanel.add(vpLabel);
 		JLabel qLabel = new JLabel("Quests",JLabel.CENTER);
-		qLabel.setUI(new VerticalLabelUI(false));
+		qLabel.setUI(new VerticalLabelUI());
 		qLabel.setBorder(BorderFactory.createRaisedBevelBorder());
 		qLabel.setFont(font);
 		qLabel.setOpaque(true);
 		qLabel.setBackground(new Color(255,100,255));
 		headerPanel.add(qLabel);
 		panel.add(headerPanel,BorderLayout.WEST);
-		
+
 		JPanel optionSpecifics = new JPanel(new GridLayout(1,3));
 		anyVpsAllowedOption = notifier.getCheckBox("Allow players to choose any number of VPs ");
 		anyVpsAllowedOption.addActionListener(new ActionListener() {
@@ -544,7 +544,7 @@ public class HostGameSetupDialog extends AggressiveDialog {
 			}
 		});
 		optionSpecifics.add(anyVpsAllowedOption);
-		
+
 		timeLimitLine = Box.createHorizontalBox();
 		timeLimitLine.add(Box.createHorizontalStrut(30));
 		timeLimitLine.add(new JLabel("# of Months:"));
@@ -554,7 +554,7 @@ public class HostGameSetupDialog extends AggressiveDialog {
 		timeLimitLine.add(numberMonthsToPlay);
 		timeLimitLine.add(Box.createHorizontalGlue());
 		optionSpecifics.add(timeLimitLine);
-		
+
 		vpAssignmentLine = Box.createHorizontalBox();
 		vpAssignmentLine.add(Box.createHorizontalStrut(30));
 		vpAssignmentLine.add(new JLabel("VPs to Achieve:"));
@@ -564,29 +564,29 @@ public class HostGameSetupDialog extends AggressiveDialog {
 		vpAssignmentLine.add(vpsToAchieve);
 		vpAssignmentLine.add(Box.createHorizontalGlue());
 		optionSpecifics.add(vpAssignmentLine);
-		
+
 		panel.add(optionSpecifics,BorderLayout.NORTH);
-	
+
 		JPanel buttonPanel = new JPanel(new GridLayout(2,3));
-		
+
 		buttonPanel.add(vpEndlessOption=new VictoryConditionButton("Endless","No time limit or VPs\nNo Hall of Fame\nGame ends when you decide to quit"));
 		buttonPanel.add(vpTimedOption=new VictoryConditionButton("Timed","Defined time limit\nAssign one VP per week plus one\nHighest score at game end wins"));
 		buttonPanel.add(vpSuddenDeathOption=new VictoryConditionButton("Sudden Death","Predefined # of VPs\nNo Time Limit\nFirst to achieve VPs wins"));
 		buttonPanel.add(questGuildsOption=new VictoryConditionButton("Guild Quests","Quests are given at guilds (expansion)\nQuests do not earn VPs\n------- NOT READY YET -------\nENDLESS, TIMED or SUDDEN DEATH"));
 		buttonPanel.add(questQtrOption=new VictoryConditionButton("Questing the Realm","Hand of Quest Cards\nFinish quests to earn VPs\n\nTIMED or SUDDEN DEATH"));
 		buttonPanel.add(questBoqOption=new VictoryConditionButton("Book of Quests","Each character picks ONE quest\nFirst to finish quest wins\n\nSUDDEN DEATH only"));
-		
+
 		questGuildsOption.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent ev) {
 				questQtrOption.setSelected(false,false);
 				questBoqOption.setSelected(false,false);
-				
+
 				vpEndlessOption.setEnabled(true);
 				vpTimedOption.setEnabled(true);
 				vpSuddenDeathOption.setEnabled(true);
-				
+
 				updateWarnings();
-				
+
 				if (!loadingPrefs) {
 					madeChanges();
 				}
@@ -596,13 +596,13 @@ public class HostGameSetupDialog extends AggressiveDialog {
 			public void stateChanged(ChangeEvent ev) {
 				questGuildsOption.setSelected(false,false);
 				questBoqOption.setSelected(false,false);
-				
+
 				vpEndlessOption.setEnabled(!questQtrOption.isSelected());
 				vpTimedOption.setEnabled(true);
 				vpSuddenDeathOption.setEnabled(true);
-				
+
 				updateWarnings();
-				
+
 				if (!loadingPrefs) {
 					madeChanges();
 				}
@@ -612,31 +612,31 @@ public class HostGameSetupDialog extends AggressiveDialog {
 			public void stateChanged(ChangeEvent ev) {
 				questGuildsOption.setSelected(false,false);
 				questQtrOption.setSelected(false,false);
-				
+
 				vpEndlessOption.setEnabled(!questBoqOption.isSelected());
 				vpTimedOption.setEnabled(!questBoqOption.isSelected());
 				vpSuddenDeathOption.setEnabled(true);
-				
+
 				updateWarnings();
-				
+
 				if (!loadingPrefs) {
 					madeChanges();
 				}
 			}
 		});
 
-		
+
 		vpEndlessOption.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent ev) {
 				vpEndlessOption.setSelected(true,false);
 				vpTimedOption.setSelected(false,false);
 				vpSuddenDeathOption.setSelected(false,false);
-				
+
 				questBoqOption.setEnabled(false);
 				questQtrOption.setEnabled(false);
-				
+
 				updateWarnings();
-				
+
 				if (!loadingPrefs) {
 					madeChanges();
 				}
@@ -647,12 +647,12 @@ public class HostGameSetupDialog extends AggressiveDialog {
 				vpEndlessOption.setSelected(false,false);
 				vpTimedOption.setSelected(true,false);
 				vpSuddenDeathOption.setSelected(false,false);
-				
+
 				questBoqOption.setEnabled(false);
 				questQtrOption.setEnabled(true);
-				
+
 				updateWarnings();
-				
+
 				if (!loadingPrefs) {
 					madeChanges();
 				}
@@ -663,21 +663,21 @@ public class HostGameSetupDialog extends AggressiveDialog {
 				vpEndlessOption.setSelected(false,false);
 				vpTimedOption.setSelected(false,false);
 				vpSuddenDeathOption.setSelected(true,false);
-				
+
 				questBoqOption.setEnabled(true);
 				questQtrOption.setEnabled(true);
-				
+
 				updateWarnings();
-				
+
 				if (!loadingPrefs) {
 					madeChanges();
 				}
 			}
 		});
-		
-		
+
+
 		panel.add(buttonPanel,BorderLayout.CENTER);
-		
+
 		panel.setBorder(BorderFactory.createTitledBorder("Victory Conditions"));
 		return panel;
 	}
@@ -698,7 +698,7 @@ public class HostGameSetupDialog extends AggressiveDialog {
 			labelTable.put( 5, new JLabel("5 - Smart (Long)") );
 			minMapRating.setLabelTable( labelTable );
 		ratingBox.add(minMapRating);
-		
+
 		ratingBox.setBorder(BorderFactory.createTitledBorder("Minimum Map Rating"));
 		return ratingBox;
 	}
@@ -727,19 +727,19 @@ public class HostGameSetupDialog extends AggressiveDialog {
 				includeExpansionSpells = notifier.getCheckBox("");
 			box.add(includeExpansionSpells);
 			box.add(Box.createHorizontalGlue());
-			
+
 		boardSetupBox.add(box);
 			box = group.createLabelLine("New Spells");
 				includeNewSpells = notifier.getCheckBox("");
 			box.add(includeNewSpells);
-			box.add(Box.createHorizontalGlue());	
-			
+			box.add(Box.createHorizontalGlue());
+
 		boardSetupBox.add(box);
 			box = group.createLabelLine("Upgrade Day Spells");
 				switchDaySpells = notifier.getCheckBox("");
 			box.add(switchDaySpells);
-			box.add(Box.createHorizontalGlue());				
-			
+			box.add(Box.createHorizontalGlue());
+
 		boardSetupBox.add(box);
 			box = group.createLabelLine("Multiple Boards");
 				multiBoardEnabled = notifier.getCheckBox("");
@@ -792,7 +792,7 @@ public class HostGameSetupDialog extends AggressiveDialog {
 //			box.add(disableReqVpsWarning);
 //			box.add(Box.createHorizontalGlue());
 //		gamePlayBox.add(box);
-		
+
 //		ButtonGroup vpAssignment = new ButtonGroup();
 //			box = group.createLabelLine("VP Assignment");
 //				Box vpAssignmentBox = Box.createHorizontalBox();
@@ -911,7 +911,7 @@ public class HostGameSetupDialog extends AggressiveDialog {
 			box.add(optionalWeatherWarning);
 			box.add(Box.createHorizontalGlue());
 		gamePlayBox.add(box);
-		
+
 		gamePlayBox.setBorder(BorderFactory.createTitledBorder("Game Play Options"));
 		return gamePlayBox;
 	}
@@ -926,19 +926,19 @@ public class HostGameSetupDialog extends AggressiveDialog {
 		GameOptionPane newOptionPane = new GameOptionPane(JTabbedPane.LEFT,editMode);
 		newOptionPane.addTab(MAIN_TAB,mainPanel);
 		newOptionPane.addActionListener(notifier);
-		
+
 		newOptionPane.setTabHtmlDescription(ADVANCED_RULES_TAB,"<html><body><font face=\"Helvetica, Arial, sans-serif\">Advanced Rules</font></body></html>");
 		newOptionPane.addOption(ADVANCED_RULES_TAB,new GameOption(Constants.ADV_CACHING,"CACHING 1.0 - Characters may record a CACHE action during their turn to create private caches of treasure and gold.",false));
 		newOptionPane.addOption(ADVANCED_RULES_TAB,new GameOption(Constants.ADV_DROPPING,"DROPPING AND LOSING BELONGINGS 3.0 - With this rule, characters have a choice of dropping an item in plain sight (where anyone can find it), or throwing it away (so it can only be found by searching).",false));
 		newOptionPane.addOption(ADVANCED_RULES_TAB,new GameOption(Constants.ADV_AMBUSHES,"AMBUSH RULES 4.2 - A successful HIDE roll on missile attacks while hidden, allow you to stay hidden.",false));
 		newOptionPane.addOption(ADVANCED_RULES_TAB,new GameOption(Constants.ADV_SERIOUS_WOUNDS,"SERIOUS WOUNDS 4.5 - Characters suffer 1D6 wounds instead of death when harm matches vulnerability.",false));
 		newOptionPane.addOption(ADVANCED_RULES_TAB,new GameOption(Constants.ADV_DRAGON_HEADS,"DRAGON HEADS 4.6 - Instead of striking, Dragon Heads do a flame missile attack.",false));
-		
+
 		// Missile table rules are exclusive
 		String[] exclusiveMissileRules = {Constants.OPT_MISSILE,Constants.REV_MISSILE};
-		
+
 		String[] exclusiveEnhancedMagicRules = {Constants.OPT_ENHANCED_MAGIC,Constants.HOUSE2_REVISED_ENHANCED_MAGIC};
-		
+
 		String[] requiresNoVisitorMissionFlip = {Constants.HOUSE2_NO_MISSION_VISITOR_FLIPSIDE};
 		String[] cannotIncludeIgnoreMissions = {Constants.HOUSE2_IGNORE_CAMPAIGNS};
 		String[] overridesNoNegativePointsOrIgnoreCampaigns = {
@@ -948,23 +948,23 @@ public class HostGameSetupDialog extends AggressiveDialog {
 		String[] cannotIncludeCampaignDebt = {
 				Constants.HOUSE2_CAMPAIGN_DEBT
 		};
-		
+
 		String[] requiresFumbleRules = {Constants.OPT_FUMBLE};
 		String[] cannotIncludeSepRiderRules = {Constants.OPT_RIDING_HORSES};
-		
+
 		String[] requiresDevelopmentRules = {Constants.EXP_DEVELOPMENT};
 		String[] cannotIncludeExpDevRules = {Constants.EXP_DEVELOPMENT_PLUS,Constants.EXP_DEV_EXCLUDE_SW,Constants.EXP_DEV_3RD_REL};
 		String[] requiresGrudges = {Constants.OPT_GRUDGES};
 		String[] cannotIncludeExtGrudges = {Constants.TE_EXTENDED_GRUDGES};
-		
+
 		String[] exclusiveRandomGen = {Constants.RANDOM_R250_521,Constants.RANDOM_MERSENNE_TWISTER};
-		
+
 		newOptionPane.setTabHtmlDescription(OPTIONAL_RULES_TAB,"<html><body><font face=\"Helvetica, Arial, sans-serif\">Optional Rules</font></body></html>");
-		
+
 // These two rules are handled on the first tab
 //		newOptionPane.addOption(OPTIONAL_RULES_TAB,new GameOption(Constants.OPT_SEASONS_COLOR,"2.2/6 - Seasonal colors - The color of magic available on the 7th day of each month varies from month to month, instead of always being BLACK/WHITE.",false));
 //		newOptionPane.addOption(OPTIONAL_RULES_TAB,new GameOption(Constants.OPT_WEATHER,"2.4 - Weather - The weather affects players week to week (only applicable if seasons are used - see first tab)",false));
-		
+
 		newOptionPane.addOption(OPTIONAL_RULES_TAB,new GameOption(Constants.OPT_QUIET_MONSTERS,"QUIET MONSTERS 3.1-3.4 - Hidden characters and hirelings do not cause chits to flip, or monsters to be summoned.",false));
 		newOptionPane.addOption(OPTIONAL_RULES_TAB,new GameOption(Constants.OPT_NO_BATTLE_DIST,"QUIET MONSTERS 3.5 - When positioning attackers on a character sheet, they do NOT have to be positioned in as many red boxes as possible.",false));
 		newOptionPane.addOption(OPTIONAL_RULES_TAB,new GameOption(Constants.OPT_COMMERCE,"COMMERCE 4.1-4.3 - This includes changes in native trading prices based on the group and using the commerce table for selling goods.",false));
@@ -977,7 +977,7 @@ public class HostGameSetupDialog extends AggressiveDialog {
 		newOptionPane.addOption(OPTIONAL_RULES_TAB,new GameOption(Constants.OPT_AUTOMATIC_ENCHANTING,"AUTOMATIC ENCHANTING 6.0 - Certain map tiles flip over automatically at the end of each week, changing many of the roadways and making more color magic available.",false));
 		newOptionPane.addOption(OPTIONAL_RULES_TAB,new GameOption(Constants.OPT_ENHANCED_ARTIFACTS,"ENHANCED ARTIFACTS AND SPELL BOOKS 7.0 - This rule allows characters to use Artifacts and Spell Books as extra Magic chits.",false));
 		newOptionPane.addOption(OPTIONAL_RULES_TAB,new GameOption(Constants.OPT_ENHANCED_MAGIC,"ENHANCED MAGIC 8.0 - Spells and Magic chits are not tied up by the casting of a spell, which allows the casting of multiple instances of a single spell.",false,exclusiveEnhancedMagicRules,null));
-		
+
 		newOptionPane.setTabHtmlDescription(OPTIONAL_CHAR_RULES_TAB,"<html><body><font face=\"Helvetica, Arial, sans-serif\">Optional Character Rules</font></body></html>");
 		newOptionPane.addOption(OPTIONAL_CHAR_RULES_TAB,new GameOption(Constants.OPT_CHAR_ABILITY_WIZARD_MAGIC_CHIT,"1.2a - WIZARD uses a MAGIC III2* instead of one MOVE M5 chit",false));
 		newOptionPane.addOption(OPTIONAL_CHAR_RULES_TAB,new GameOption(Constants.OPT_CHAR_ABILITY_WIZARD_IGNORES_SPX,"1.2b - WIZARD ignores SPX",false));
@@ -987,7 +987,7 @@ public class HostGameSetupDialog extends AggressiveDialog {
 		newOptionPane.addOption(OPTIONAL_CHAR_RULES_TAB,new GameOption(Constants.OPT_CHAR_ABILITY_DRUID_SUMMON,"1.6a - DRUID doesn't summon monsters from Site chits.",false));
 		newOptionPane.addOption(OPTIONAL_CHAR_RULES_TAB,new GameOption(Constants.OPT_CHAR_ABILITY_DRUID_CURSES,"1.6b - DRUID is immune to curses.",false));
 		newOptionPane.addOption(OPTIONAL_CHAR_RULES_TAB,new GameOption(Constants.OPT_CHAR_ABILITY_ELF,"1.7 - ELF must choose between Light Elf, or Great Elf.  Affects which chits can be played during the game.",false));
-		
+
 		newOptionPane.setTabHtmlDescription(EXPANDING_RULES_TAB,"<html><body><font face=\"Helvetica, Arial, sans-serif\">Expanding the Realm</font></body></html>");
 		newOptionPane.addOption(EXPANDING_RULES_TAB,new GameOption(Constants.EXP_NO_DWELLING_START,"SOLITAIRE 1.5-1.6 - No Dwelling Start - Dwellings/Ghosts are NOT revealed at the start, rather discovered like the Campfires.  Since there are no Dwellings at the start, you must enter the map from the edge.",false));
 		newOptionPane.addOption(EXPANDING_RULES_TAB,new GameOption(Constants.EXP_DOUBLE_MONSTER_DIE,"SOLITAIRE 1.7 - Two Rows Prowling - Rather than roll a single die for prowling monsters, two dice are rolled, and two rows are prowling at once.  If the die rolls are the same, only one row prowls.",false));
@@ -996,11 +996,11 @@ public class HostGameSetupDialog extends AggressiveDialog {
 		newOptionPane.addOption(EXPANDING_RULES_TAB,new GameOption(Constants.EXP_DEV_EXCLUDE_SW,"EXCLUDE STARTING WORTH - For purposes of development ONLY, starting equipment value is not considered when gaining chits but is considered for end game victory points.",false,null,requiresDevelopmentRules));
 		newOptionPane.addOption(EXPANDING_RULES_TAB,new GameOption(Constants.EXP_DEV_3RD_REL,"GAIN 3RD RELATIONSHIPS - When you achieve 3rd level, you receive the relationships you would have normally had.  If you are playing with GRUDGES/GRATITUDES, these levels ARE affected by the difference.",false,null,requiresDevelopmentRules));
 		newOptionPane.addOption(EXPANDING_RULES_TAB,new GameOption(Constants.EXP_CUSTOM_CHARS,"CUSTOM CHARACTERS - Allow players to choose from custom characters.",true,null,requiresDevelopmentRules));
-		
+
 		newOptionPane.setTabHtmlDescription(REVISED_RULES_TAB,"<html><body><font face=\"Helvetica, Arial, sans-serif\">Revised Rules from http://www.triremis.com.au/pmwiki/pmwiki.php</font></body></html>");
 		newOptionPane.addOption(REVISED_RULES_TAB,new GameOption(Constants.REV_MISSILE,"Revised Missile Table - Use the Revised Optional Missile Table for all missile attacks.",false,exclusiveMissileRules,null));
 		newOptionPane.addOption(REVISED_RULES_TAB,new GameOption(Constants.REV_DAMPEN_FAST_SPELLS,"Hamblen's Kludge Adjustment - Drop one sharpness star from Attack spells (ie., Fiery Blast) cast at speed zero.",false));
-		
+
 		newOptionPane.setTabHtmlDescription(HOUSE1_RULES_TAB,"<html><body><font face=\"Helvetica, Arial, sans-serif\">Robin's House Rules</font></body></html>");
 		newOptionPane.addOption(HOUSE1_RULES_TAB,new GameOption(Constants.HOUSE1_DWARF_ACTION,"Productive Dwarf - (This rule replaces section 1.1 of the advantage section for the Dwarf)  The Dwarf must spend one additional consecutive move phase to enter any non-cave clearing, but otherwise receives the normal number of phases.  (Special thanks to Daniel Farrow for this alternative rule which is much more workable than the one I was using!)",false));
 		newOptionPane.addOption(HOUSE1_RULES_TAB,new GameOption(Constants.HOUSE1_CHIT_REMAIN_FACE_UP,"Persistent Chits - Once sound/warning chits have been discovered, they remain face up for the remainder of the game.",false));
@@ -1010,7 +1010,7 @@ public class HostGameSetupDialog extends AggressiveDialog {
 		newOptionPane.addOption(HOUSE1_RULES_TAB,new GameOption(Constants.HOUSE1_FORCE_INN_AFTER_GAMESTART,"Force Inn After Start - Characters joining AFTER the start of the game, MUST start at the Inn, regardless of their normal options.",false));
 		newOptionPane.addOption(HOUSE1_RULES_TAB,new GameOption(Constants.HOUSE1_NO_SECRETS,"No Secrets - When you are looting, or searching, the results of your finds are reported in the log for everyone to see.",false));
 		newOptionPane.addOption(HOUSE1_RULES_TAB,new GameOption(Constants.HOUSE1_ALLOW_LEVEL_GAINS_PAST_FOUR,"Level Rewards Past Four - When playing extended development rules, you will get rewards past level four if you advance during the game.",false));
-		
+
 		newOptionPane.setTabHtmlDescription(HOUSE2_RULES_TAB,"<html><body><font face=\"Helvetica, Arial, sans-serif\">Other House Rules</font></body></html>");
 		newOptionPane.addOption(HOUSE2_RULES_TAB,new GameOption(Constants.HOUSE2_NO_SPELL_LIMIT,"No Spell Limit - Magic Realm limits you to 14 spells per character.  This option removes that limit.",false));
 		newOptionPane.addOption(HOUSE2_RULES_TAB,new GameOption(Constants.HOUSE2_MONSTER_WEAPON_NOFLIP,"No Flip with Monster Weapon Hit - Tremendous monsters with a weapon (Head or Club) will only flip when their body hits.",false));
@@ -1022,23 +1022,23 @@ public class HostGameSetupDialog extends AggressiveDialog {
 		newOptionPane.addOption(HOUSE2_RULES_TAB,new GameOption(Constants.HOUSE2_IGNORE_CAMPAIGNS,"No Campaigns - Exclude campaign chits when doing initial setup.  This rule requires the previous rule.",false,cannotIncludeCampaignDebt,requiresNoVisitorMissionFlip));
 		newOptionPane.addOption(HOUSE2_RULES_TAB,new GameOption(Constants.HOUSE2_CAMPAIGN_DEBT,"Campaign Debt - Allows characters pick up campaign chit, even if it means they will have negative points.",false,overridesNoNegativePointsOrIgnoreCampaigns,null));
 		newOptionPane.addOption(HOUSE2_RULES_TAB,new GameOption(Constants.HOUSE2_DAY_END_TRADING_ON,"Day End Trading ON - Day End Trading will be ON by default for all new characters.  This can still be turned off by individual characters, if desired.",false));
-		
+
 		newOptionPane.setTabHtmlDescription(HOUSE3_RULES_TAB,"<html><body><font face=\"Helvetica, Arial, sans-serif\">More House Rules</font></body></html>");
 		newOptionPane.addOption(HOUSE3_RULES_TAB,new GameOption(Constants.HOUSE3_DWELLING_ARMOR_REPAIR,"Armor Repair - Repair armor at any dwelling during a trade phase, for the difference between the intact price, and the damaged price.",false));
 		newOptionPane.addOption(HOUSE3_RULES_TAB,new GameOption(Constants.HOUSE3_SNOW_HIDE_EXCLUDE_CAVES,"Snow Hiding in Caves - Ignore special weather conditions that prevent hiding due to snow or soft ground, when you perform the HIDE activity in a cave.",false));
 		newOptionPane.addOption(HOUSE3_RULES_TAB,new GameOption(Constants.HOUSE3_NO_VP_DEVELOPMENT_RAMP,"No VP Development Ramp - When playing with development rules, earn one chit for every VP gained, regardless of level",false));
 		newOptionPane.addOption(HOUSE3_RULES_TAB,new GameOption(Constants.HOUSE3_NO_RESTRICT_VPS_FOR_DEV,"No VP Restrictions for Development - For purposes of development only, don't restrict VP gains to assigned VPs.",false));
-		
+
 		newOptionPane.setTabHtmlDescription(TE_RULES_TAB,"<html><body><font face=\"Helvetica, Arial, sans-serif\">3rd Edition Rules</font></body></html>");
 		newOptionPane.addOption(TE_RULES_TAB,new GameOption(Constants.TE_KNIGHT_ADJUSTMENT,"KNIGHTS ADJUSTMENT - To limit the Black/White Knight's advantage, their ALLY starts off as FRIENDLY.",false));
 		newOptionPane.addOption(TE_RULES_TAB,new GameOption(Constants.TE_WATCHFUL_NATIVES,"WATCHFUL NATIVES - Unassigned natives become \"watchful\", and are not susceptible to suprise attacks.",false));
 		newOptionPane.addOption(TE_RULES_TAB,new GameOption(Constants.TE_EXTENDED_GRUDGES,"EXTENDED GRUDGES - Killing an unhired neutral, unfriendly or enemy native reduces one�s friendship level with the native�s group one level for the rest of the game.  This penalty can only be applied once per character per native group per evening.  REQUIRES Grudges optional rule to be in play.",false,null,requiresGrudges));
 		newOptionPane.addOption(TE_RULES_TAB,new GameOption(Constants.TE_BENEVOLENT_SPELLS,"BENEVOLENT SPELLS - With this rule, some spells can be cast on your hired natives without causing them to attack you.",false));
-		
+
 		newOptionPane.setTabHtmlDescription(RANDOM_GEN_TAB,"<html><body><font face=\"Helvetica, Arial, sans-serif\">Random Number Generator Preference - For more details see:</font><br>http://www.qbrundage.com/michaelb/pubs/essays/random_number_generation.html</body></html>");
 		newOptionPane.addOption(RANDOM_GEN_TAB,new GameOption(Constants.RANDOM_R250_521,"Use R250/521 - A very fast shift-register sequence random number generator, invented by Kirkpatrick and Stoll in 1981.",false,exclusiveRandomGen,null));
 		newOptionPane.addOption(RANDOM_GEN_TAB,new GameOption(Constants.RANDOM_MERSENNE_TWISTER,"Use Mersenne Twister - A twisted GFSR(624,397) invented by Matsumora and Nishimura in 1996.",false,exclusiveRandomGen,null));
-		
+
 		return newOptionPane;
 	}
 	private void updateWarnings() {
@@ -1050,10 +1050,10 @@ public class HostGameSetupDialog extends AggressiveDialog {
 		minMapRating.setEnabled(boardAutoSetup.isSelected());
 		smtpHost.setEnabled(emailNotification.isSelected());
 		testEmailButton.setEnabled(emailNotification.isSelected());
-		
+
 		timeLimitLine.setVisible(vpTimedOption.isSelected());
 		vpAssignmentLine.setVisible(vpSuddenDeathOption.isSelected() && !anyVpsAllowedOption.isSelected() && !questBoqOption.isSelected());
-		
+
 		updateControls();
 	}
 	private void setupDefaults() {
@@ -1086,12 +1086,12 @@ public class HostGameSetupDialog extends AggressiveDialog {
 		useWeather.setSelected(true);
 		vpTimedOption.setSelected(true);
 		vpsToAchieve.setText("5");
-		
+
 		for (Iterator i=optionPane.getGameOptionKeys().iterator();i.hasNext();) {
 			String key = (String)i.next();
 			optionPane.setOption(key,false);
 		}
-		
+
 		updateWarnings();
 		loadingPrefs = false;
 	}
@@ -1107,7 +1107,7 @@ public class HostGameSetupDialog extends AggressiveDialog {
 	}
 	public boolean captureHostPrefs () {
 		// Before doing anything, validate the fields
-		
+
 		// No empty fields allowed
 		if (gamePort.getText().length()==0 ||
 				hostName.getText().length()==0 ||
@@ -1119,7 +1119,7 @@ public class HostGameSetupDialog extends AggressiveDialog {
 			JOptionPane.showMessageDialog(null,"You must enter a value in every field");
 			return false;
 		}
-		
+
 		// Some fields require a number
 		if (readInt(gamePort.getText())<1000) {
 			JOptionPane.showMessageDialog(null,"Game Port must be greater than 1000");
@@ -1133,7 +1133,7 @@ public class HostGameSetupDialog extends AggressiveDialog {
 			JOptionPane.showMessageDialog(null,"VPs to Achieve must be a number greater than zero");
 			return false;
 		}
-		
+
 		// Populate hostPrefs
 		hostPrefs.setGamePortString(gamePort.getText());
 		hostPrefs.setHostName(hostName.getText());
@@ -1161,7 +1161,7 @@ public class HostGameSetupDialog extends AggressiveDialog {
 		hostPrefs.setPref(Constants.QST_BOOK_OF_QUESTS,questBoqOption.isSelected());
 		hostPrefs.setPref(Constants.QST_QUEST_CARDS,questQtrOption.isSelected());
 		hostPrefs.setPref(Constants.QST_GUILD_QUESTS,questGuildsOption.isSelected());
-		
+
 		Object obj = startingSeason.getSelectedItem();
 		if (obj instanceof GameObject) {
 			GameObject go = (GameObject)startingSeason.getSelectedItem();
@@ -1170,16 +1170,16 @@ public class HostGameSetupDialog extends AggressiveDialog {
 		else {
 			hostPrefs.setStartingSeason(obj.toString());
 		}
-		
+
 		for (Iterator i=optionPane.getGameOptionKeys().iterator();i.hasNext();) {
 			String optionKey = (String)i.next();
 			hostPrefs.setPref(optionKey,optionPane.getOption(optionKey));
 		}
-		
+
 		hostPrefs.setPref(Constants.OPT_WEATHER,useWeather.isSelected());
 		hostPrefs.setPref(Constants.EXP_SUDDEN_DEATH,vpSuddenDeathOption.isSelected());
 		hostPrefs.setPref(Constants.HOUSE2_ANY_VPS,anyVpsAllowedOption.isSelected());
-		
+
 		return true;
 	}
 	public boolean getDidStart() {
@@ -1203,7 +1203,7 @@ public class HostGameSetupDialog extends AggressiveDialog {
 			JOptionPane.showMessageDialog(this,"Please enter a valid host email address.","Error!",JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-		
+
 		ArrayList<String> recipients = new ArrayList<String>();
 		recipients.add(address);
 		String error = RealmMail.sendMail(smtp,address,recipients,gameTitle.getText(),"Test","This is a test of the e-mail notification setup within RealmSpeak.  If you receieved this e-mail by mistake, please ignore it.");
@@ -1214,7 +1214,7 @@ public class HostGameSetupDialog extends AggressiveDialog {
 			JOptionPane.showMessageDialog(this,"Mail sent successfully.","Success!",JOptionPane.PLAIN_MESSAGE);
 		}
 	}
-	
+
 	/**
 	 * For testing only
 	 */

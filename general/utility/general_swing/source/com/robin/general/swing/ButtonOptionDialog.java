@@ -289,6 +289,12 @@ public class ButtonOptionDialog extends AggressiveDialog {
         }
     }
 
+    /**
+     * Sets the icon for the specified selectable object.
+     *
+     * @param object the object
+     * @param icon its new icon
+     */
     public void setSelectionObjectIcon(Object object, Icon icon) {
         if (icon == null) {
             return;
@@ -373,8 +379,12 @@ public class ButtonOptionDialog extends AggressiveDialog {
         }
 
         // If the message is too long, it messes up the packing...
-        String message = "This is a really long test, to see how the buttons are handled in this situation.  You see, if the title is TOO big, the buttons fall off the bottom of the dialog, and you have to resize it to see them!!!";
-        ButtonOptionDialog dialog = new ButtonOptionDialog(new JFrame(), null, message, "title", false);
+        String message = "This is a really long test, to see how the buttons " +
+                "are handled in this situation.  You see, if the title is " +
+                "TOO big, the buttons fall off the bottom of the dialog, and " +
+                "you have to resize it to see them!!!";
+        ButtonOptionDialog dialog =
+                new ButtonOptionDialog(new JFrame(), null, message, "title", false);
         dialog.addSelectionObject("Magic Sight");
         IconGroup group = new IconGroup(IconGroup.HORIZONTAL, 2);
         group.addIcon(IconFactory.findIcon("icons/arrow2.gif"));

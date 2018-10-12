@@ -45,6 +45,7 @@ public class AbstractGraphicsTest extends AbstractTest {
     private static final Color SMOKEY = new Color(0, 0, 0, 128);
 
     protected static final String SLOW = "Slow Test";
+    protected static final String FRAME = "Frame Test";
 
 
     /**
@@ -175,6 +176,20 @@ public class AbstractGraphicsTest extends AbstractTest {
      */
     protected static Rectangle r(int x, int y, int w, int h) {
         return new Rectangle(x, y, w, h);
+    }
+
+    /**
+     * Put the thread to sleep for the specified number of seconds.
+     *
+     * @param seconds seconds to sleep
+     */
+    protected void napForAWhile(int seconds) {
+        try {
+            Thread.sleep(seconds * 1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println("<end of my " + seconds + " second nap!>");
     }
 
 }
