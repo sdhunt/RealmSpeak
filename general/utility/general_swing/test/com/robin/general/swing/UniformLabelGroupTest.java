@@ -22,51 +22,52 @@
 package com.robin.general.swing;
 
 import com.robin.general.graphics.AbstractGraphicsTest;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.swing.*;
 import java.awt.*;
 
 /**
- * Unit tests for {@link VerticalLabelUI}.
+ * Unit tests for {@link UniformLabelGroup}.
  */
-public class VerticalLabelUITest extends AbstractGraphicsTest {
+public class UniformLabelGroupTest extends AbstractGraphicsTest {
 
-    private class MyLabel extends JLabel {
-        MyLabel(String text) {
-            this(text, Color.BLACK, Color.WHITE);
-        }
-
-        MyLabel(String text, Color fg, Color bg) {
-            super(text);
-            setForeground(fg);
-            setBackground(bg);
-            setOpaque(true);
-        }
-    }
+    private static final Font TEST_FONT = new Font("Courier", Font.BOLD, 18);
 
     @Test
-    @Ignore(FRAME)
-    public void verticalLabels() {
-        title("vertical labels");
+    public void basic() {
+        title("Basic");
 
         UnitTestFrame frame = new UnitTestFrame(300, 200);
         JPanel panel = frame.basePanel();
 
-        MyLabel ccLabel = new MyLabel("Counter-Clockwise", Color.BLUE, Color.YELLOW);
-        ccLabel.setUI(new VerticalLabelUI());
+        Box box = Box.createVerticalBox();
+        box.setBorder(BorderFactory.createEtchedBorder());
 
-        MyLabel stLabel = new MyLabel("Standard");
-        stLabel.setOpaque(true);
+        UniformLabelGroup group = new UniformLabelGroup();
+        Box fooBox = group.createLabelLine("Foo");
+        fooBox.add(Box.createHorizontalGlue());
+        fooBox.add(new JButton("Manchu"));
 
-        MyLabel cwLabel = new MyLabel("Clockwise", Color.YELLOW, Color.BLUE);
-        cwLabel.setUI(new VerticalLabelUI(true));
+        Box barBox = group.createLabelLine("Barbie Doll");
+        barBox.add(Box.createHorizontalGlue());
+        barBox.add(new JButton("and Ken!"));
 
-        panel.add(ccLabel);
-        panel.add(stLabel);
-        panel.add(cwLabel);
+        Box zooBox = group.createLabelLine("Zoo");
+        zooBox.add(Box.createHorizontalGlue());
+        zooBox.add(new JButton("Zebras"));
 
+        Box yoBox = group.createLabelLine("Yo!", TEST_FONT);
+        yoBox.add(Box.createHorizontalGlue());
+        yoBox.add(new JButton("Howzat!?"));
+
+
+        box.add(fooBox);
+        box.add(barBox);
+        box.add(zooBox);
+        box.add(yoBox);
+
+        panel.add(box);
         frame.setVisible(true);
         napForAWhile();
     }

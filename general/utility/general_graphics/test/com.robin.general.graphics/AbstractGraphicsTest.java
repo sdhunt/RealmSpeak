@@ -36,6 +36,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class AbstractGraphicsTest extends AbstractTest {
 
+    private static final int DEFAULT_NAP_TIME_SECS = 8;
     private static final String IMAGE_OUTPUT_DIR = "test/imgout";
 
     private static final int SQ_SIZE = 100;
@@ -190,6 +191,13 @@ public class AbstractGraphicsTest extends AbstractTest {
             e.printStackTrace();
         }
         System.out.println("<end of my " + seconds + " second nap!>");
+    }
+
+    /**
+     * Nap for default time (8 seconds).
+     */
+    protected void napForAWhile() {
+        napForAWhile(DEFAULT_NAP_TIME_SECS);
     }
 
 }

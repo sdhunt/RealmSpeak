@@ -31,10 +31,33 @@ import java.awt.event.WindowEvent;
  */
 public class UnitTestFrame extends JFrame {
 
+    private JPanel panel;
+
+    /**
+     * Creates a unit test frame of the specified dimensions.
+     * Positions the frame in the center of the screen, and adds
+     * a base panel.
+     *
+     * @param width frame width
+     * @param height frame height
+     */
     public UnitTestFrame(int width, int height) {
         super("Unit Test Frame");
         positionMe(width, height);
         addWindowListener(new WindowHandler());
+
+        panel = new JPanel();
+        panel.setBackground(Color.lightGray);
+        getContentPane().add(panel);
+    }
+
+    /**
+     * Returns a reference to the base panel.
+     *
+     * @return the base panel
+     */
+    public JPanel basePanel() {
+        return panel;
     }
 
     private void positionMe(int width, int height) {
