@@ -27,6 +27,9 @@ import org.junit.Test;
 import javax.swing.*;
 import java.awt.*;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 /**
  * Unit tests for {@link UniformLabelGroup}.
  */
@@ -35,10 +38,10 @@ public class UniformLabelGroupTest extends AbstractGraphicsTest {
     private static final Font TEST_FONT = new Font("Courier", Font.BOLD, 18);
 
     @Test
+//    @Ignore(FRAME)
     public void basic() {
         title("Basic");
-
-        UnitTestFrame frame = new UnitTestFrame(300, 200);
+        UnitTestFrame frame = new UnitTestFrame();
         JPanel panel = frame.basePanel();
 
         Box box = Box.createVerticalBox();
@@ -67,7 +70,36 @@ public class UniformLabelGroupTest extends AbstractGraphicsTest {
         box.add(zooBox);
         box.add(yoBox);
 
+        assertThat(group.labelCount(), is(4));
+        assertThat(group.longestLabel(), is("Barbie Doll:"));
+        assertThat(group.getMaxPixelWidth(), is(72));
+
         panel.add(box);
+        frame.setVisible(true);
+        napForAWhile();
+    }
+
+    @Test
+//    @Ignore(FRAME)
+    public void labelFont() {
+        title("Label Font");
+        UnitTestFrame frame = new UnitTestFrame();
+
+        Box box = Box.createVerticalBox();
+        box.setBorder(BorderFactory.createEtchedBorder());
+
+        UniformLabelGroup group = new UniformLabelGroup();
+        group.setLabelFont(TEST_FONT);
+        box.add(group.createLabelLine("This is a label line"));
+        box.add(group.createLabelLine("Another label"));
+        box.add(group.createLine());
+        box.add(group.createLabelLine("Third time a charm"));
+
+        assertThat(group.labelCount(), is(4));
+        assertThat(group.longestLabel(), is("This is a label line:"));
+        assertThat(group.getMaxPixelWidth(), is(231));
+
+        frame.basePanel().add(box);
         frame.setVisible(true);
         napForAWhile();
     }

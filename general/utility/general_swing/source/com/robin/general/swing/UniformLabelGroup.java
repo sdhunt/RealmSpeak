@@ -36,7 +36,7 @@ public class UniformLabelGroup {
     private Font labelFont = null;
     private Vector labelGroup = null;
     private int maxPixelWidth = 0;
-	private int borderWidth;
+    private int borderWidth;
     private String longest; // only really useful for debugging purposes
 
     /**
@@ -55,18 +55,39 @@ public class UniformLabelGroup {
         this.borderWidth = borderWidth;
     }
 
+    /**
+     * Sets the font associated with this label group.
+     *
+     * @param font the font
+     */
     public void setLabelFont(Font font) {
         labelFont = font;
     }
 
+    /**
+     * Returns the number of labels in this group.
+     *
+     * @return the label count
+     */
     public int labelCount() {
         return labelGroup.size();
     }
 
+    /**
+     * Returns the text of the label that has the longest (pixel) rendering.
+     *
+     * @return the text of the longest label
+     */
     public String longestLabel() {
         return longest;
     }
 
+    /**
+     * Adds the given JLabel to the group (adjusting the collection of
+     * labels as needed).
+     *
+     * @param jLabel the label to add
+     */
     public void add(JLabel jLabel) {
         if (labelGroup == null) {
             labelGroup = new Vector();
@@ -94,12 +115,24 @@ public class UniformLabelGroup {
         }
     }
 
+    /**
+     * Returns the maximum width, measured in pixels.
+     *
+     * @return maximum pixel width
+     */
     public int getMaxPixelWidth() {
         return maxPixelWidth;
     }
 
-    public JLabel createLabel(String label) {
-        JLabel jLabel = new JLabel(label, JLabel.RIGHT);
+    /**
+     * Creates and returns a JLabel from the given string, also adding it
+     * to the group.
+     *
+     * @param labelText the label text
+     * @return the added label
+     */
+    public JLabel createLabel(String labelText) {
+        JLabel jLabel = new JLabel(labelText, JLabel.RIGHT);
         if (labelFont != null) {
             jLabel.setFont(labelFont);
         }
@@ -107,13 +140,32 @@ public class UniformLabelGroup {
         return jLabel;
     }
 
-    public Box createLabelLine(String label) {
-        return createLabelLine(label, null);
+    /**
+     * Creates a label line consisting of an initial label (from the specified
+     * text) with a colon (:) suffix, followed by a short space, ready for
+     * more stuff to be added to the line.
+     * Note that the "line" itself is a horizontal {@link Box} component.
+     *
+     * @param labelText the initial label text
+     * @return the newly created box component
+     */
+    public Box createLabelLine(String labelText) {
+        return createLabelLine(labelText, null);
     }
 
-    public Box createLabelLine(String label, Font font) {
+    /**
+     * Creates a label line consisting of an initial label (from the specified
+     * text and font) with a colon (:) suffix, followed by a short space,
+     * ready for more stuff to be added to the line.
+     * Note that the "line" itself is a horizontal {@link Box} component.
+     *
+     * @param labelText the initial label text
+     * @param font      the font to apply to the label
+     * @return the newly created box component
+     */
+    public Box createLabelLine(String labelText, Font font) {
         Box line = Box.createHorizontalBox();
-        JLabel jLabel = createLabel(label + COLON);
+        JLabel jLabel = createLabel(labelText + COLON);
         if (font != null) {
             jLabel.setFont(font);
         }
@@ -122,6 +174,12 @@ public class UniformLabelGroup {
         return line;
     }
 
+    /**
+     * Creates an initially empty label line.
+     * Note that the "line" itself is a horizontal {@link Box} component.
+     *
+     * @return the newly created box component
+     */
     public Box createLine() {
         Box line = Box.createHorizontalBox();
         line.add(createLabel(SPACE));

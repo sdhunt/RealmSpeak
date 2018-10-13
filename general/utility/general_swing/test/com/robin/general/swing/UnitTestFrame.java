@@ -31,14 +31,25 @@ import java.awt.event.WindowEvent;
  */
 public class UnitTestFrame extends JFrame {
 
+    private static final int DEFAULT_WIDTH = 300;
+    private static final int DEFAULT_HEIGHT = 200;
+
     private JPanel panel;
+
+    /**
+     * Creates a unit test frame with default dimensions;
+     * width: {@value #DEFAULT_WIDTH}, height: {@value #DEFAULT_HEIGHT}.
+     */
+    public UnitTestFrame() {
+        this(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+    }
 
     /**
      * Creates a unit test frame of the specified dimensions.
      * Positions the frame in the center of the screen, and adds
      * a base panel.
      *
-     * @param width frame width
+     * @param width  frame width
      * @param height frame height
      */
     public UnitTestFrame(int width, int height) {

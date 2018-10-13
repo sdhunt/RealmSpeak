@@ -36,7 +36,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class AbstractGraphicsTest extends AbstractTest {
 
-    private static final int DEFAULT_NAP_TIME_SECS = 8;
+    private static final int DEFAULT_NAP_TIME_SECS = 5;
     private static final String IMAGE_OUTPUT_DIR = "test/imgout";
 
     private static final int SQ_SIZE = 100;
