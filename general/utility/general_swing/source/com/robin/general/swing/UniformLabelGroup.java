@@ -22,22 +22,25 @@ package com.robin.general.swing;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Vector;
+import java.util.ArrayList;
 
 /**
  * A utility class for organizing labels uniformly.
  */
 public class UniformLabelGroup {
 
+    private static final int LABEL_LINE_HEIGHT = 20;
     private static final int DEFAULT_BORDER_WIDTH = 5;
     private static final String SPACE = " ";
     private static final String COLON = ":";
 
+    private final java.util.List<JLabel> labels = new ArrayList<>();
+
     private Font labelFont = null;
-    private Vector labelGroup = null;
     private int maxPixelWidth = 0;
     private int borderWidth;
-    private String longest; // only really useful for debugging purposes
+    // only really useful for debugging purposes
+    private String longest;
 
     /**
      * Creates a uniform label group with default border width of 5 pixels.
@@ -70,7 +73,7 @@ public class UniformLabelGroup {
      * @return the label count
      */
     public int labelCount() {
-        return labelGroup.size();
+        return labels.size();
     }
 
     /**
@@ -84,34 +87,33 @@ public class UniformLabelGroup {
 
     /**
      * Adds the given JLabel to the group (adjusting the collection of
-     * labels as needed).
+     * labels as necessary).
      *
-     * @param jLabel the label to add
+     * @param label the label to add
+     * @throws NullPointerException if label is null
      */
-    public void add(JLabel jLabel) {
-        if (labelGroup == null) {
-            labelGroup = new Vector();
+    public void add(JLabel label) {
+        if (label == null) {
+            throw new NullPointerException("Label cannot be null");
         }
-        labelGroup.addElement(jLabel);
+        labels.add(label);
 
-        FontMetrics metrics = jLabel.getFontMetrics(jLabel.getFont());
-        int stringWidth = metrics.stringWidth(jLabel.getText());
+        FontMetrics metrics = label.getFontMetrics(label.getFont());
+        int stringWidth = metrics.stringWidth(label.getText());
         if (stringWidth > maxPixelWidth) {
             maxPixelWidth = stringWidth;
-            longest = jLabel.getText();
+            longest = label.getText();
         }
         updateLabels();
     }
 
     private void updateLabels() {
-        if (labelGroup != null) {
-            Dimension d = new Dimension(maxPixelWidth + borderWidth, 20);
-            for (int i = 0; i < labelGroup.size(); i++) {
-                JLabel jLabel = (JLabel) labelGroup.elementAt(i);
-                jLabel.setMinimumSize(d);
-                jLabel.setMaximumSize(d);
-                jLabel.setPreferredSize(d);
-            }
+        Dimension d = new Dimension(maxPixelWidth + borderWidth,
+                                    LABEL_LINE_HEIGHT);
+        for (JLabel label : labels) {
+            label.setMinimumSize(d);
+            label.setMaximumSize(d);
+            label.setPreferredSize(d);
         }
     }
 

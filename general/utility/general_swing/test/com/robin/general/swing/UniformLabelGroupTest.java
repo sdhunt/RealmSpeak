@@ -103,4 +103,10 @@ public class UniformLabelGroupTest extends AbstractGraphicsTest {
         frame.setVisible(true);
         napForAWhile();
     }
+
+    @Test(expected = NullPointerException.class)
+    public void noNullLabels() {
+        UniformLabelGroup group = new UniformLabelGroup();
+        group.add(null);
+    }
 }
