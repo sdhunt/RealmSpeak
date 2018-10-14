@@ -214,6 +214,7 @@ public class SuggestionTextArea extends JTextArea {
             this.position = position;
         }
 
+        @Override
         public void run() {
             insert(completion, position);
             setCaretPosition(position + completion.length());
@@ -223,6 +224,7 @@ public class SuggestionTextArea extends JTextArea {
     }
 
     private class CommitAction extends AbstractAction {
+        @Override
         public void actionPerformed(ActionEvent ev) {
             if (mode == Mode.COMPLETION) {
                 int pos = getSelectionEnd();
@@ -236,6 +238,7 @@ public class SuggestionTextArea extends JTextArea {
     }
 
     private class RollbackAction extends AbstractAction {
+        @Override
         public void actionPerformed(ActionEvent ev) {
             if (mode == Mode.COMPLETION) {
                 replaceSelection("");

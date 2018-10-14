@@ -27,28 +27,35 @@ import org.junit.Test;
 
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
- * Unit tests for {@link SuggestionTextField}.
+ * Unit tests for {@link SuggestionTextArea}.
  */
 public class SuggestionTextAreaTest extends AbstractGraphicsTest {
+
+    private static final String[] SUGGESTIONS = {
+            // "DragonsLair",
+            // "UndeadTown",
+            // "DraconicTemple",
+            // "Lost City",
+            "Bubbles",
+            "Bubbles 2",
+            "Magic Flute",
+            "Magic Spectacles",
+    };
+
+    private static final List<String> SUGGEST_LIST = Arrays.asList(SUGGESTIONS);
 
     @Test
     @Ignore(FRAME)
     public void originalMain() {
         title("Original Main");
-        ArrayList<String> list = new ArrayList<>();
-        // list.add("DragonsLair");
-        // list.add("UndeadTown");
-        // list.add("DraconicTemple");
-        // list.add("Lost City");
-        list.add("Bubbles");
-        list.add("Bubbles 2");
-        list.add("Magic Flute");
-        list.add("Magic Spectacles");
-        SuggestionTextArea textArea = new SuggestionTextArea(20, 40);
-        textArea.setWords(list);
-        textArea.setLineModeOn(true);
+        SuggestionTextArea textArea = new SuggestionTextArea(5, 20);
+        ArrayList<String> myList = new ArrayList<>(SUGGEST_LIST);
+        textArea.setWords(myList);
+        textArea.setLineModeOn(false);
         JOptionPane.showMessageDialog(new JFrame(), new JScrollPane(textArea));
 
         print("The selection chosen was: [%s]", textArea.getText());

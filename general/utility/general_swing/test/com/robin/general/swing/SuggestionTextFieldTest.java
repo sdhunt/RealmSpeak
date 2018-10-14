@@ -27,26 +27,34 @@ import org.junit.Test;
 
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Unit tests for {@link SuggestionTextField}.
  */
 public class SuggestionTextFieldTest extends AbstractGraphicsTest {
 
+    private static final String[] SUGGESTIONS = {
+            // "DragonsLair",
+            // "UndeadTown",
+            // "DraconicTemple",
+            // "Lost City",
+            "Bubbles",
+            "Bubbles 2",
+            "Magic Flute",
+            "Magic Spectacles",
+    };
+
+    private static final List<String> SUGGEST_LIST = Arrays.asList(SUGGESTIONS);
+
     @Test
     @Ignore(FRAME)
     public void originalMain() {
         title("Original Main");
-        ArrayList<String> list = new ArrayList<>();
-        // list.add("DragonsLair");
-        // list.add("UndeadTown");
-        // list.add("DraconicTemple");
-        // list.add("Lost City");
-        list.add("Bubbles");
-        list.add("Magic Flute");
-        list.add("Magic Spectacles");
         SuggestionTextField textField = new SuggestionTextField();
-        textField.setWords(list);
+        ArrayList<String> myList = new ArrayList<>(SUGGEST_LIST);
+        textField.setWords(myList);
         textField.setLineModeOn(true);
         JOptionPane.showMessageDialog(new JFrame(), textField);
 
