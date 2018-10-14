@@ -242,21 +242,4 @@ public class SuggestionTextField extends JTextField {
             }
         }
     }
-
-    // TODO: migrate to unit test class
-    public static void main(String[] args) {
-        ArrayList<String> list = new ArrayList<>();
-        // list.add("DragonsLair");
-        // list.add("UndeadTown");
-        // list.add("DraconicTemple");
-        // list.add("Lost City");
-        list.add("Bubbles");
-        list.add("Magic Flute");
-        list.add("Magic Spectacles");
-        SuggestionTextField textField = new SuggestionTextField();
-        textField.setWords(list);
-        textField.setLineModeOn(true);
-        JOptionPane.showMessageDialog(new JFrame(), textField);
-        System.exit(0);
-    }
 }

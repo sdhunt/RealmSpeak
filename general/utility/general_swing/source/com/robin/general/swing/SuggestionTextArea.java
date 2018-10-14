@@ -250,23 +250,4 @@ public class SuggestionTextArea extends JTextArea {
             }
         }
     }
-
-
-    // TODO: migrate to unit test class
-    public static void main(String[] args) {
-        ArrayList<String> list = new ArrayList<>();
-        // list.add("DragonsLair");
-        // list.add("UndeadTown");
-        // list.add("DraconicTemple");
-        // list.add("Lost City");
-        list.add("Bubbles");
-        list.add("Bubbles 2");
-        list.add("Magic Flute");
-        list.add("Magic Spectacles");
-        SuggestionTextArea textArea = new SuggestionTextArea(20, 40);
-        textArea.setWords(list);
-        textArea.setLineModeOn(true);
-        JOptionPane.showMessageDialog(new JFrame(), new JScrollPane(textArea));
-        System.exit(0);
-    }
 }
