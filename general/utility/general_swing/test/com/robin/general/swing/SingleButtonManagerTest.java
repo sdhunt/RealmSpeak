@@ -27,7 +27,6 @@ import org.junit.Test;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
@@ -40,11 +39,12 @@ public class SingleButtonManagerTest extends AbstractGraphicsTest {
 
     private int step = 0;
 
-    private void finishUpButton(SingleButton button,
-                                SingleButtonManager manager, Box box) {
+    private void finishUpButton(Box box, SingleButtonManager manager,
+            SingleButton button, ActionListener al) {
         button.setBorder(BorderFactory.createLineBorder(Color.yellow, 2));
         button.setVisible(false);
         ComponentTools.lockComponentSize(button, BUTTON_DIM);
+        button.addActionListener(al);
         manager.addButton(button);
         box.add(button);
     }
@@ -72,12 +72,12 @@ public class SingleButtonManagerTest extends AbstractGraphicsTest {
                 return step < 1;
             }
         };
-        b1.addActionListener(e -> {
+        // we can inline the action listener as a lambda function...
+        finishUpButton(box, manager, b1, ev -> {
             print("ONE Pressed");
             step++;
             manager.updateButtonVisibility();
         });
-        finishUpButton(b1, manager, box);
 
         // second button...
         SingleButton b2 = new SingleButton("Two", true) {
@@ -86,12 +86,11 @@ public class SingleButtonManagerTest extends AbstractGraphicsTest {
                 return step < 2;
             }
         };
-        b2.addActionListener(e -> {
+        finishUpButton(box, manager, b2, ev -> {
             print("TWO pressed");
             step++;
             manager.updateButtonVisibility();
         });
-        finishUpButton(b2, manager, box);
 
         manager.updateButtonVisibility();
 
