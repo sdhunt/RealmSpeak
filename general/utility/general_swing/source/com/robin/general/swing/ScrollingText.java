@@ -33,6 +33,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
+/**
+ * A component that displays slowly scrolling text.
+ */
 public class ScrollingText extends JComponent implements ActionListener {
 
     private Timer scrollTimer;
@@ -54,6 +57,13 @@ public class ScrollingText extends JComponent implements ActionListener {
     private ArrayList<ScrollLine> lines;
     private ArrayList<HyperlinkListener> listeners;
 
+    /**
+     * Creates a scrolling text component using the given background image with
+     * specified insets.
+     *
+     * @param backgroundImage the background image
+     * @param insets the insets
+     */
     public ScrollingText(ImageIcon backgroundImage, Insets insets) {
         this(backgroundImage.getIconWidth(), backgroundImage.getIconHeight(), null);
         this.backgroundImage = backgroundImage;
@@ -61,8 +71,16 @@ public class ScrollingText extends JComponent implements ActionListener {
         setCursor(new Cursor(Cursor.HAND_CURSOR));
     }
 
+    /**
+     * Creates a scrolling text component of the given width and height, and
+     * with the specified background color.
+     *
+     * @param width component width
+     * @param height component height
+     * @param backgroundColor background color
+     */
     public ScrollingText(int width, int height, Color backgroundColor) {
-        lines = new ArrayList<ScrollLine>();
+        lines = new ArrayList<>();
         size = new Dimension(width, height);
         setPreferredSize(size);
         this.backgroundColor = backgroundColor;
@@ -75,20 +93,24 @@ public class ScrollingText extends JComponent implements ActionListener {
     private void setupMouse() {
         mouseHover = null;
         MouseInputAdapter input = new MouseInputAdapter() {
+            @Override
             public void mouseMoved(MouseEvent ev) {
                 mouseHover = getAdjustedPoint(ev.getPoint());
             }
 
+            @Override
             public void mouseEntered(MouseEvent ev) {
                 mouseHover = getAdjustedPoint(ev.getPoint());
             }
 
+            @Override
             public void mouseExited(MouseEvent ev) {
                 mouseHover = null;
                 scrollHold = false;
                 delayScroll = 0;
             }
 
+            @Override
             public void mousePressed(MouseEvent ev) {
                 scrollHold = true;
                 mouseHover = null;
@@ -96,6 +118,7 @@ public class ScrollingText extends JComponent implements ActionListener {
                 currentScrollAtDragStart = currentScroll;
             }
 
+            @Override
             public void mouseDragged(MouseEvent ev) {
                 Point p = getAdjustedPoint(ev.getPoint());
                 if (mouseDragStart != null) {
@@ -104,6 +127,7 @@ public class ScrollingText extends JComponent implements ActionListener {
                 }
             }
 
+            @Override
             public void mouseReleased(MouseEvent ev) {
                 scrollHold = false;
                 delayScroll = 100;
@@ -111,6 +135,7 @@ public class ScrollingText extends JComponent implements ActionListener {
                 mouseHover = getAdjustedPoint(ev.getPoint());
             }
 
+            @Override
             public void mouseClicked(MouseEvent ev) {
                 Point p = getAdjustedPoint(ev.getPoint());
                 String link = getLinkUrl(p);
@@ -126,15 +151,25 @@ public class ScrollingText extends JComponent implements ActionListener {
         addMouseMotionListener(input);
     }
 
+    /**
+     * Adds a hyperlink listener to this component.
+     *
+     * @param listener the hyperlink listener to add
+     */
     public void addHyperlinkListener(HyperlinkListener listener) {
         if (listeners == null) {
-            listeners = new ArrayList<HyperlinkListener>();
+            listeners = new ArrayList<>();
         }
         if (!listeners.contains(listener)) {
             listeners.add(listener);
         }
     }
 
+    /**
+     * Removes a hyperlink listener from this component.
+     *
+     * @param listener the hyperlink listener to remove
+     */
     public void removeHyperlinkListener(HyperlinkListener listener) {
         if (listeners != null && listeners.contains(listener)) {
             listeners.remove(listener);
@@ -159,14 +194,23 @@ public class ScrollingText extends JComponent implements ActionListener {
         }
     }
 
+    /**
+     * Starts the scroller.
+     */
     public void start() {
         scrollTimer.start();
     }
 
+    /**
+     * Adds a scroll line to the scroller.
+     *
+     * @param scrollLine the line to add
+     */
     public void addLine(ScrollLine scrollLine) {
         lines.add(scrollLine);
     }
 
+    @Override
     public void actionPerformed(ActionEvent arg0) {
         if (!isDisplayable()) {
             scrollTimer.stop();
@@ -186,7 +230,7 @@ public class ScrollingText extends JComponent implements ActionListener {
         return p;
     }
 
-    public String getLinkUrl(Point p) {
+    private String getLinkUrl(Point p) {
         if (p != null) {
             for (ScrollLine line : lines) {
                 String link = line.linkAtPoint(p);
@@ -198,6 +242,7 @@ public class ScrollingText extends JComponent implements ActionListener {
         return null;
     }
 
+    @Override
     public void paintComponent(Graphics g1) {
         Graphics2D g = (Graphics2D) g1;
         if (backgroundColor != null) {
@@ -235,37 +280,5 @@ public class ScrollingText extends JComponent implements ActionListener {
             g1.setFont(getFont());
             g1.drawString(linkUrl, 5, size.height - 5);
         }
-    }
-
-    public static void main(String[] args) {
-        //ImageIcon ii = new ImageIcon("c:/parchment.png");
-
-        String fontName = "Dialog";
-        Font header = new Font(fontName, Font.BOLD, 22);
-        Font listing = new Font(fontName, Font.BOLD, 12);
-        Font url = new Font(fontName, Font.PLAIN, 10);
-
-        //ScrollingText scrolly = new ScrollingText(ii,new Insets(25,0,25,0));
-        ScrollingText scrolly = new ScrollingText(300, 400, Color.lightGray);
-        scrolly.setFont(url);
-        scrolly.setForeground(Color.blue);
-
-        scrolly.addLine(new ScrollLine("Coding", header, Color.green, Color.black, 2));
-        scrolly.addLine(new ScrollLine("Dave One", listing, Color.black));
-        scrolly.addLine(new ScrollLine("Mark Twosome", listing, Color.black, null, 0, SwingConstants.CENTER, "http://www.google.com"));
-        scrolly.addLine(new ScrollLine("Fred Threebay", listing, Color.black));
-        scrolly.addLine(new ScrollLine("Steve Fourplay", listing, Color.black));
-        scrolly.addLine(new ScrollLine("Gary Fivish", listing, Color.black));
-        scrolly.addLine(new ScrollLine());
-        scrolly.addLine(new ScrollLine("Testing", header, Color.green, Color.black, 2));
-        scrolly.addLine(new ScrollLine("Dave One", listing, Color.black));
-        scrolly.addLine(new ScrollLine("Mark Twosome", listing, Color.black));
-        scrolly.addLine(new ScrollLine("Fred Threebay", listing, Color.black));
-        scrolly.addLine(new ScrollLine("Steve Fourplay", listing, Color.black, null, 0, SwingConstants.CENTER, "http://www.google.com"));
-        scrolly.addLine(new ScrollLine("Gary Fivish", listing, Color.black));
-
-        scrolly.start();
-        JOptionPane.showMessageDialog(new JFrame(), scrolly);
-        System.exit(0);
     }
 }
