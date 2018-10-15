@@ -37,6 +37,18 @@ import java.awt.event.ActionListener;
  */
 public class ScrollingTextTest extends AbstractGraphicsTest {
 
+    private static final String FONT_NAME = "Dialog";
+
+    private static final Font HEADER_FONT = new Font(FONT_NAME, Font.BOLD, 22);
+    private static final Font LISTING_FONT = new Font(FONT_NAME, Font.BOLD, 12);
+    private static final Font URL_FONT = new Font(FONT_NAME, Font.PLAIN, 10);
+    private static final Color URL_COLOR = Color.blue;
+
+    private static final ImageIcon PARCHMENT =
+            IconFactory.findIcon("images/parchment.png");
+    private static final Insets PARCHMENT_INSETS = new Insets(32, 0, 30, 0);
+
+
     private class TimerThing implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -60,44 +72,54 @@ public class ScrollingTextTest extends AbstractGraphicsTest {
         napForAWhile();
     }
 
+    private ScrollLine slHeader(String title) {
+        return new ScrollLine(title, HEADER_FONT, Color.green, Color.black, 2);
+    }
+
+    private ScrollLine slListing(String text) {
+        return new ScrollLine(text, LISTING_FONT, Color.black);
+    }
+
+    private ScrollLine slLink(String text, String url) {
+        return new ScrollLine(text, LISTING_FONT, Color.black, null, 0,
+                              SwingConstants.CENTER, url);
+    }
+
     @Test
     @Ignore(FRAME)
-    public void basic() {
-        title("Basic");
-        String fontName = "Dialog";
-        Font header = new Font(fontName, Font.BOLD, 22);
-        Font listing = new Font(fontName, Font.BOLD, 12);
-        Font url = new Font(fontName, Font.PLAIN, 10);
-        Insets insets = new Insets(32, 0, 30, 0);
-        ImageIcon parchment = IconFactory.findIcon("images/parchment.png");
+    public void parchmentScroller() {
+        title("Parchment Scroller");
 
-        ScrollingText scrolly = new ScrollingText(parchment, insets);
+        ScrollingText scroller = new ScrollingText(PARCHMENT, PARCHMENT_INSETS);
 
-        scrolly.setFont(url);
-        scrolly.setForeground(Color.blue);
+        scroller.setFont(URL_FONT);
+        scroller.setForeground(URL_COLOR);
 
-        scrolly.addLine(new ScrollLine("Coding", header, Color.green, Color.black, 2));
-        scrolly.addLine(new ScrollLine("Dave One", listing, Color.black));
-        scrolly.addLine(new ScrollLine("Mark Twosome", listing, Color.black, null, 0, SwingConstants.CENTER, "http://www.google.com"));
-        scrolly.addLine(new ScrollLine("Fred Threebay", listing, Color.black));
-        scrolly.addLine(new ScrollLine("Steve Fourplay", listing, Color.black));
-        scrolly.addLine(new ScrollLine("Gary Fivish", listing, Color.black));
-        scrolly.addLine(new ScrollLine());
-        scrolly.addLine(new ScrollLine("Testing", header, Color.green, Color.black, 2));
-        scrolly.addLine(new ScrollLine("Dave One", listing, Color.black));
-        scrolly.addLine(new ScrollLine("Mark Twosome", listing, Color.black));
-        scrolly.addLine(new ScrollLine("Fred Threebay", listing, Color.black));
-        scrolly.addLine(new ScrollLine("Steve Fourplay", listing, Color.black, null, 0, SwingConstants.CENTER, "http://www.google.com"));
-        scrolly.addLine(new ScrollLine("Gary Fivish", listing, Color.black));
+        scroller.addLine(slHeader("Coding"));
+        scroller.addLine(slListing("Dave One"));
+        scroller.addLine(slLink("Mark Twosome", "http://google.com/TWO"));
+        scroller.addLine(slListing("Fred Threebay"));
+        scroller.addLine(slListing("Steve Fourplay"));
+        scroller.addLine(slListing("Gary Fivish"));
 
-        scrolly.addHyperlinkListener(new HyperListen());
+        scroller.addLine(new ScrollLine());
+
+        scroller.addLine(slHeader("Testing"));
+        scroller.addLine(slListing("Dave One"));
+        scroller.addLine(slListing("Mark Twosome"));
+        scroller.addLine(slListing("Fred Threebay"));
+        scroller.addLine(slLink("Steve Fourplay", "http://www.google.com/FOUR"));
+        scroller.addLine(slListing("Gary Fivish"));
+
+        scroller.addHyperlinkListener(new HyperListen());
 
         UnitTestFrame frame = new UnitTestFrame(380, 450);
-        frame.basePanel().add(scrolly);
-        frame.setVisible(true);
+        frame.basePanel().add(scroller);
 
-        // Note: need to make frame visible, because we check isDisplayable()
-        scrolly.start();
+        // Note: need to make frame visible FIRST, before starting the scroller
+        //       because we check isDisplayable() and abort if this is false.
+        frame.setVisible(true);
+        scroller.start();
 
         napForAWhile(30);
     }
