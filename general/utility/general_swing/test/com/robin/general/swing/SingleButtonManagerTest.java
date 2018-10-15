@@ -40,6 +40,15 @@ public class SingleButtonManagerTest extends AbstractGraphicsTest {
 
     private int step = 0;
 
+    private void finishUpButton(SingleButton button,
+                                SingleButtonManager manager, Box box) {
+        button.setBorder(BorderFactory.createLineBorder(Color.yellow, 2));
+        button.setVisible(false);
+        ComponentTools.lockComponentSize(button, BUTTON_DIM);
+        manager.addButton(button);
+        box.add(button);
+    }
+
     @Test
     @Ignore(FRAME)
     public void basic() {
@@ -63,19 +72,12 @@ public class SingleButtonManagerTest extends AbstractGraphicsTest {
                 return step < 1;
             }
         };
-        b1.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                print("ONE Pressed");
-                step++;
-                manager.updateButtonVisibility();
-            }
+        b1.addActionListener(e -> {
+            print("ONE Pressed");
+            step++;
+            manager.updateButtonVisibility();
         });
-        b1.setBorder(BorderFactory.createLineBorder(Color.yellow, 2));
-        b1.setVisible(false);
-        ComponentTools.lockComponentSize(b1, BUTTON_DIM);
-        manager.addButton(b1);
-        box.add(b1);
+        finishUpButton(b1, manager, box);
 
         // second button...
         SingleButton b2 = new SingleButton("Two", true) {
@@ -84,19 +86,12 @@ public class SingleButtonManagerTest extends AbstractGraphicsTest {
                 return step < 2;
             }
         };
-        b2.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                print("TWO pressed");
-                step++;
-                manager.updateButtonVisibility();
-            }
+        b2.addActionListener(e -> {
+            print("TWO pressed");
+            step++;
+            manager.updateButtonVisibility();
         });
-        b2.setBorder(BorderFactory.createLineBorder(Color.yellow, 2));
-        b2.setVisible(false);
-        ComponentTools.lockComponentSize(b2, BUTTON_DIM);
-        manager.addButton(b2);
-        box.add(b2);
+        finishUpButton(b2, manager, box);
 
         manager.updateButtonVisibility();
 
