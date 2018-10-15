@@ -38,7 +38,6 @@ public class UniformLabelGroupTest extends AbstractGraphicsTest {
     private static final Font TEST_FONT = new Font("Courier", Font.BOLD, 18);
 
     @Test
-//    @Ignore(FRAME)
     public void basic() {
         title("Basic");
         UnitTestFrame frame = new UnitTestFrame();
@@ -80,7 +79,6 @@ public class UniformLabelGroupTest extends AbstractGraphicsTest {
     }
 
     @Test
-//    @Ignore(FRAME)
     public void labelFont() {
         title("Label Font");
         UnitTestFrame frame = new UnitTestFrame();
