@@ -1,16 +1,16 @@
-/* 
+/*
  * RealmSpeak is the Java application for playing the board game Magic Realm.
  * Copyright (c) 2005-2015 Robin Warren
  * E-mail: robin@dewkid.com
- * 
+ *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the License,
  * or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
  * implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with this program. If not, see
  *
  * http://www.gnu.org/licenses/
@@ -41,9 +41,9 @@ public class ActionRow {
 	private static final ImageIcon COMPLETED_ICON = IconFactory.findIcon("images/actions/greencheck.gif");
 	private static final ImageIcon CANCELLED_ICON = IconFactory.findIcon("images/actions/redx.gif");
 	private static final ImageIcon INVALID_ICON = IconFactory.findIcon("images/actions/ban.gif");
-	
+
 	public static final String SLEEPING = "Sleeping";
-	
+
 	public static boolean askAboutAbandoningFollowers = false;
 
 	private ImageIcon icon;
@@ -52,9 +52,9 @@ public class ActionRow {
 	private String result;
 	private boolean completed;
 	private boolean cancelled;
-	
+
 	private boolean autoMarkInventory;
-	
+
 	private String blankReason = null;; // identifies a BLANK phase
 	private boolean spawned = false; // identifies "spawned" actions that aren't recorded or tracked
 	private boolean invalid = false; // identifies an INVALID phase (this doesn't count as a real phase!!)
@@ -64,16 +64,16 @@ public class ActionRow {
 	private CharacterWrapper character;
 	private TileLocation location; // for moves only
 	private DieRoller roller;
-	
+
 	private int count=1;
 	private int bonusCount=0; // The number of "bonus" phases that don't apply towards the phase manager
-	
+
 	private ActionRow newAction = null;
-	
+
 	private RealmTable realmTable = null;
-	
+
 	private boolean isFollowing;
-	
+
 	private boolean ponyLock = false;
 
 	/**
@@ -178,7 +178,7 @@ public class ActionRow {
 	public void incrementCount() {
 		count++;
 	}
-	
+
 	public ImageIcon getIcon() {
 		return icon;
 	}
@@ -251,7 +251,7 @@ public class ActionRow {
 		}
 		return description;
 	}
-	
+
 	public ImageIcon getStatusIcon() {
 		switch(getActionState()) {
 			case Pending:	return PENDING_ICON;
@@ -323,7 +323,7 @@ public class ActionRow {
 	public void setCompleted(boolean completed) {
 		this.completed = completed;
 	}
-	
+
 	public void landCharacterIfNeeded() {
 		ActionId id = CharacterWrapper.getIdForAction(action);
 		if (id!=ActionId.Fly) {
@@ -340,10 +340,10 @@ public class ActionRow {
 
 	/**
 	 * The meat of an action - is this really the best place for this?
-	 * 
+	 *
 	 * Mmmmmm.  ACTION MEAT!!!!
 	 */
-	public void process() {	
+	public void process() {
 		if (!isFollowing) {
 			if (character.isBlocked()) {
 				gameHandler.broadcast(character.getGameObject().getName(),"BLOCKED - Cannot perform action "+action);
@@ -358,9 +358,9 @@ public class ActionRow {
 				return;
 			}
 		}
-		
+
 		completed = true; // the default - can be modified if there are problems
-		
+
 		if (blankReason==null && !invalid) {
 			autoMarkInventory = true;
 			ActionId id = CharacterWrapper.getIdForAction(action);
@@ -424,22 +424,22 @@ public class ActionRow {
 			else if (ActionId.Fortify==id) {
 				doFortifyAction();
 			}
-			
+
 			if (autoMarkInventory) {
 				character.markAllInventoryNotNew();
 			}
-			
+
 			logAction();
-			
+
 			if (!character.isActive()) {
 				return;
 			}
 		}
-		
+
 		checkSleep(); // check again, in case something changed during the action
 
 		if (completed) { // don't check for blocking until completed!
-			
+
 			// Check for Violent Storm
 			if (willBeAffectedByStorm()) {
 				TileLocation current = character.getCurrentLocation();
@@ -448,7 +448,7 @@ public class ActionRow {
 				turnPanel.doLosePhases(phasesLost);
 				character.setStormed(true);
 			}
-		
+
 			character.addActionPerformedToday(action,getActionState(),result,roller);
 		}
 	}
@@ -479,18 +479,18 @@ public class ActionRow {
 	public void logAction() {
 		if (completed) {
 			DayAction da = CharacterWrapper.getActionForString(action);
-			String actionName = da==null?"":da.getName();			
+			String actionName = da==null?"":da.getName();
 			gameHandler.broadcast(character.getGameObject().getName(),actionName+" - "+getNonsecretKey(result));
-			
+
 			// Now that the non-secret portion has been logged, we can convert the result fully to the secret key.
 			result = getSecretKey(result);
 		}
 	}
 	/**
 	 * The string coming in may have a secret key in it that looks like:
-	 * 
+	 *
 	 *   ##Treasure|Deft Gloves##
-	 * 
+	 *
 	 * See Loot.characterFindsItem
 	 */
 	private String[] breakOutKeys(String in) {
@@ -559,7 +559,7 @@ public class ActionRow {
 							"The "+testCharacter.getGameObject().getName()+" has fallen asleep.",
 							sleepObject.getName()+" in clearing",JOptionPane.INFORMATION_MESSAGE,rc.getIcon());
 				}
-				
+
 				int order = testCharacter.getPlayOrder();
 				if (order<2) { // Report sleep effect if testCharacter is current turn, or played turn (NOT future turns!)
 					JOptionPane.showMessageDialog(
@@ -590,7 +590,7 @@ public class ActionRow {
 	public void setRoller(DieRoller roller) {
 		this.roller = roller;
 	}
-	
+
 	private void doHideAction() {
 		if (!character.isHidden()) {
 			TileLocation location = character.getCurrentLocation();
@@ -608,7 +608,7 @@ public class ActionRow {
 				if (!canHide && hostPrefs.hasPref(Constants.HOUSE3_SNOW_HIDE_EXCLUDE_CAVES) && location.isInClearing() && location.clearing.isCave()) {
 					canHide = true;
 				}
-				
+
 				if (canHide) {
 					roller = DieRollBuilder.getDieRollBuilder(gameHandler.getMainFrame(),character).createHideRoller();
 					if (roller.getHighDieResult() < 6) {
@@ -651,7 +651,7 @@ public class ActionRow {
 	}
 	private void doMoveAction() {
 		TileLocation current = character.getCurrentLocation();
-		
+
 		// Before starting, make sure that you aren't "lost in the maze"
 		RealmComponent discoverToLeave = ClearingUtility.findDiscoverToLeaveComponent(current,character);
 		if (discoverToLeave!=null) {
@@ -660,15 +660,15 @@ public class ActionRow {
 			cancelled = true;
 			return;
 		}
-		
+
 		// First and foremost, make sure character can carry everything
 		if (!character.canMove() && current.isInClearing()) {
 			JOptionPane.showMessageDialog(gameHandler.getMainFrame(),"You cannot move with your current inventory.  Drop something first.");
 			completed = false;
 			return;
 		}
-		
-		
+
+
 		result = "";
 		if (character.moveRandomly() && !current.isBetweenClearings()) {
 			// Pick a random location
@@ -677,7 +677,7 @@ public class ActionRow {
 			roller.addRedDie();
 			roller.rollDice("Random Clearing");
 			int c = roller.getTotal();
-			
+
 			// Find all clearings that match the number
 			ArrayList<ClearingDetail> clearings = new ArrayList<ClearingDetail>();
 			for (Iterator i=current.clearing.getConnectedPaths().iterator();i.hasNext();) {
@@ -689,7 +689,7 @@ public class ActionRow {
 					}
 				}
 			}
-			
+
 			// If none, cancel move action
 			if (clearings.isEmpty()) {
 				cancelled = false;
@@ -699,7 +699,7 @@ public class ActionRow {
 			}
 			else {
 				result = "Random move to clearing "+c+": ";
-				
+
 				if (clearings.size()==1) {
 					// If one, do move action
 					location = new TileLocation(clearings.get(0));
@@ -710,26 +710,26 @@ public class ActionRow {
 					CenteredMapView.getSingleton().markClearings(clearings,true);
 					TileLocationChooser chooser = new TileLocationChooser(gameHandler.getMainFrame(),CenteredMapView.getSingleton(),current);
 					chooser.setVisible(true);
-					
+
 					// Update the location
 					CenteredMapView.getSingleton().markClearings(clearings,false);
 					location = chooser.getSelectedLocation();
 				}
 			}
 		}
-		
+
 		// Player is moved to clearing
 		if (location != null) {
 			// clearing might NOT be on the same side, if a tile flipped somewhere, so update it here
 			location.clearing = location.clearing.correctSide();
-			
+
 			// Validate that the player CAN move along the path (if discovery was needed)
 			PathDetail path = current.hasClearing()
 					? current.clearing.getConnectingPath(location.clearing)
 					: null;
-					
+
 			boolean overridePath = false;
-			
+
 			if (character.canWalkWoods(current.tile) || (current.isTileOnly() && !current.isFlying())) {
 				ArrayList validClearings = new ArrayList();
 				if (current.clearing!=null) {
@@ -745,16 +745,16 @@ public class ActionRow {
 					overridePath = true;
 				}
 			}
-			
+
 			boolean validMove = true;
 			if (current.isBetweenClearings()) {
 				validMove = current.clearing.equals(location.clearing) || current.getOther().clearing.equals(location.clearing);
 			}
-			
+
 			if (!overridePath && path==null) {
 				overridePath = ClearingUtility.canUseGates(character,location.clearing);
 			}
-			
+
 			if (validMove && (overridePath || current.isBetweenClearings() || path!=null)) {
 				if (overridePath || current.isBetweenClearings() || character.validPath(path)) {
 					// Make sure that if the character is moving into a mountain clearing, check current clearing
@@ -765,10 +765,10 @@ public class ActionRow {
 						result = "BLOCKED";
 						return;
 					}
-					
+
 					// Move followers - FIXME Not totally right... but close!
 					ArrayList actionFollowers = character.getActionFollowers();
-					
+
 					if (actionFollowers.size()>0) {
 						ArrayList canLeaveBehind = new ArrayList();
 						ArrayList encumberedFollowers = new ArrayList();
@@ -826,14 +826,14 @@ public class ActionRow {
 								message.append("\nDo you want to leave ");
 								message.append(totalCanLeaveBehind==1?"that follower":"one or more of them");
 								message.append(" behind?");
-								
+
 								int ret = QuietOptionPane.showConfirmDialog(
 											gameHandler.getMainFrame(),
 											message.toString(),
 											"Unwanted Followers?",
 											JOptionPane.YES_NO_OPTION,
 											"Don't ask again this turn",true);
-								askAboutAbandoningFollowers = !QuietOptionPane.isLastWasSilenced();
+								askAboutAbandoningFollowers = !QuietOptionPane.lastWasSilenced();
 								if (ret==JOptionPane.YES_OPTION) {
 									turnPanel.doAbandonActionFollowers();
 									actionFollowers = character.getActionFollowers();
@@ -841,7 +841,7 @@ public class ActionRow {
 							}
 						}
 					}
-					
+
 					if (character.isMistLike()) {
 						ArrayList<RealmComponent> followingHirelings = character.getFollowingHirelings();
 						if (!followingHirelings.isEmpty()) {
@@ -851,7 +851,7 @@ public class ActionRow {
 							}
 						}
 					}
-					
+
 					// Here is the ACTUAL MOVE
 					character.moveToLocation(gameHandler.getMainFrame(),location);
 					if (location.hasClearing() && location.clearing.isEdge()) {
@@ -866,7 +866,7 @@ public class ActionRow {
 					if (reverse!=null) {
 						character.updatePathKnowledge(reverse);
 					}
-					
+
 					// Move the action followers too (FIXME What happens to followers following a character leaving a map?)
 					for (Iterator i=actionFollowers.iterator();i.hasNext();) {
 						CharacterWrapper follower = (CharacterWrapper)i.next();
@@ -891,11 +891,11 @@ public class ActionRow {
 							character.removeActionFollower(follower,gameHandler.getGame().getMonsterDie());
 						}
 					}
-					
+
 					gameHandler.getInspector().getMap().centerOn(character.getCurrentLocation());
 					gameHandler.updateCharacterFrames();
 					result = result+"moved";
-					
+
 					if (!overridePath && !current.isBetweenClearings() && (path.isNarrow() || (reverse!=null && reverse.isNarrow()))) {
 						// Other characters in the same clearing who have found hidden enemies
 						// for the day should gain a discovery when this move occurs (on either end of the path!)
@@ -951,9 +951,9 @@ public class ActionRow {
 		// Player chooses from one type of search table
 		RealmTable searchTable = null;
 		TileLocation current = character.getCurrentLocation(); // shouldn't be able to do a search if not in a clearing!
-		
+
 		boolean magicSight = character.usesMagicSight(); // magic sight limits what character can do
-		
+
 		// choose from Peer, Locate, Loot, ReadingRunes
 		// Should be able to cancel to stop a playAll
 		ButtonOptionDialog chooseSearch = new ButtonOptionDialog(gameHandler.getMainFrame(), null, "Search:", "", true);
@@ -975,13 +975,13 @@ public class ActionRow {
 			}
 			addTableToChooser(chooseSearch,RealmTable.locate(gameHandler.getMainFrame(),null));
 		}
-		
+
 		for (RealmComponent rc:current.clearing.getClearingComponents()) {
 			// Loot is a special case, as it requires a TL
 			if (rc.getGameObject().hasThisAttribute("treasure_location")) {
 				if (/*!rc.getGameObject().hasThisAttribute("discovery") ||*/ // Why did I have this?
 						character.hasTreasureLocationDiscovery(rc.getGameObject().getName())) {
-					
+
 					// no point in looting if nothing is left! (exception: Sites with TableLoot)
 					if (TreasureUtility.getTreasureCount(rc.getGameObject(),character)>0 || rc.getGameObject().hasAttributeBlock("table")) {
 						// can't loot sites that still need to be opened (crypt, vault)
@@ -992,7 +992,7 @@ public class ActionRow {
 							}
 						}
 					}
-					
+
 					// any spells for Read Runes?
 					if (!magicSight && character.isCharacter() && SpellUtility.getSpellCount(rc.getGameObject(),null,true)>0) {
 						addTableToChooser(chooseSearch,RealmTable.readRunes(gameHandler.getMainFrame(),rc.getGameObject()));
@@ -1003,7 +1003,7 @@ public class ActionRow {
 				addTableToChooser(chooseSearch,RealmTable.capture(gameHandler.getMainFrame(),(TravelerChitComponent)rc));
 			}
 		}
-		
+
 		ArrayList<GameObject> openableSites = character.getAllOpenableSites();
 		if (!openableSites.isEmpty()) {
 			String message = "Open";
@@ -1014,12 +1014,12 @@ public class ActionRow {
 			}
 			chooseSearch.setSelectionObjectIcon(message,group);
 		}
-		
+
 		if (!magicSight && ClearingUtility.getAbandonedItemCount(current)>0) {
 			// don't need hint icons for clearing loots...
 			chooseSearch.addSelectionObject(RealmTable.loot(gameHandler.getMainFrame(),character,current,gameHandler.getUpdateFrameListener()));
 		}
-		
+
 		// check player inventory
 		if (!magicSight) {
 			for (GameObject item:character.getEnhancingItems()) {
@@ -1028,11 +1028,11 @@ public class ActionRow {
 				}
 			}
 		}
-		
+
 		chooseSearch.setLocationRelativeTo(gameHandler.getMainFrame());
 		chooseSearch.pack();
 		chooseSearch.setVisible(true);
-		
+
 		Object selected = chooseSearch.getSelectedObject();
 		if (selected instanceof String) {
 			// Currently, the only String possibility, is the option to open the VAULT
@@ -1196,10 +1196,10 @@ public class ActionRow {
 					}
 				}
 			}
-			
+
 			// Find and add any boons for this trader
 			hold.addAll(character.getBoons(trader.getGameObject()));
-			
+
 			// Update the character notebook accordingly
 			character.addNoteTrade(trader.getGameObject(),hold);
 		}
@@ -1209,10 +1209,10 @@ public class ActionRow {
 		else { // TRADE_SELL
 			hold = character.getSellableInventory();
 		}
-		
+
 		if (!hold.isEmpty()) {
 			// Cool - now do trading
-			
+
 			// First, make sure all treasures are marked as "seen"
 			for (Iterator i=hold.iterator();i.hasNext();) {
 				GameObject item = (GameObject)i.next();
@@ -1220,19 +1220,19 @@ public class ActionRow {
 					item.setThisAttribute(Constants.TREASURE_SEEN);
 				}
 			}
-			
+
 			// Just in case the Flowers of Rest are here, we'd better check for sleep...
 			checkSleep();
 			if (character.isSleep()) {
 				// oops!
 				return;
 			}
-			
+
 			RealmTradeDialog tradeDialog;
 			if (TRADE_BUY.equals(tradeAction)) {
 				// Buying
 				tradeDialog = new RealmTradeDialog(gameHandler.getMainFrame(),"Select an item or spell to BUY from "+traderRel+":",false,false,true);
-				
+
 				// Log what is being offered up
 				StringBufferedList sb = new StringBufferedList();
 				for(GameObject go:hold) {
@@ -1264,15 +1264,15 @@ public class ActionRow {
 			tradeDialog.setTrader(trader);
 			tradeDialog.setTradeObjects(hold);
 			tradeDialog.setVisible(true);
-			
+
 			Collection selComponents = tradeDialog.getSelectedRealmComponents();
 			if (selComponents!=null && selComponents.size()>0) {
 				boolean repair = TRADE_REPAIR.equals(tradeAction);
 				if (TRADE_BUY.equals(tradeAction) || repair) { // TRADE_BUY or TRADE_REPAIR
-					
+
 					// Can only be one item purchased
 					RealmComponent merchandise = (RealmComponent)selComponents.iterator().next();
-					
+
 					// Let's make sure this item CAN be bought
 					if (!repair && hostPrefs.hasPref(Constants.HOUSE1_NO_NEGATIVE_POINTS)) {
 						int famePrice = TreasureUtility.getFamePrice(merchandise.getGameObject(),trader.getGameObject());
@@ -1287,20 +1287,20 @@ public class ActionRow {
 							return;
 						}
 					}
-					
+
 					GameObject go = merchandise.getGameObject();
 					String merchandiseName = "the "+go.getName();
 					if (go.hasThisAttribute(RealmComponent.TREASURE) && !hostPrefs.hasPref(Constants.HOUSE1_NO_SECRETS)) {
 						merchandiseName = "a treasure";
 					}
-					
+
 					if (repair) {
 						gameHandler.broadcast(character.getGameObject().getName(),"Bidding to repair "+merchandiseName);
 					}
 					else {
 						gameHandler.broadcast(character.getGameObject().getName(),"Bidding for "+merchandiseName);
 					}
-					
+
 					// Determine price, and then verify with player that they want to buy
 					realmTable = Meeting.createMeetingTable(
 							gameHandler.getMainFrame(),
@@ -1323,7 +1323,7 @@ public class ActionRow {
 					sb.countIdenticalItems();
 					gameHandler.broadcast(character.getGameObject().getName(),"Selling to "+trader.getGameObject().getName()+".");
 					gameHandler.broadcast(character.getGameObject().getName(),"Attempting to sell: "+sb.toString());
-					
+
 					realmTable = Commerce.createCommerceTable(
 							gameHandler.getMainFrame(),
 							character,
@@ -1357,7 +1357,7 @@ public class ActionRow {
 			if (!restChoices.isEmpty()) { // has to be chits to rest!
 				if (RealmUtility.willBeBlocked(character,isFollowing,false)) {
 					// Block after the first phase!
-					
+
 					// Make this one 1 phase, and then split any remaining count into a new action row
 					int newCount = count-1;
 					count = 1;
@@ -1412,7 +1412,7 @@ public class ActionRow {
 				}
 			}
 		}
-		
+
 		if (canBeHealed.size()>0) {
 			RealmComponentOptionChooser chooser = new RealmComponentOptionChooser(gameHandler.getMainFrame(),"Who will you heal?",true);
 			chooser.addRealmComponents(canBeHealed,false);
@@ -1432,7 +1432,7 @@ public class ActionRow {
 			}
 		}
 		else {
-			result = "no one to heal"; 
+			result = "no one to heal";
 		}
 	}
 	private void doAlertAction() {
@@ -1528,7 +1528,7 @@ public class ActionRow {
 				}
 			}
 		}
-		
+
 		if (damagedArmor.size()>0) {
 			RealmComponentOptionChooser chooser = new RealmComponentOptionChooser(gameHandler.getMainFrame(),"Repair which?",true);
 			chooser.addRealmComponents(damagedArmor,false);
@@ -1546,7 +1546,7 @@ public class ActionRow {
 	}
 	private void doHireAction() {
 		// Player chooses from native groups, and then gets to bid on lowest ranked native
-		
+
 		// hire_type=single or group
 		// If "group", hire highest number first, down to HQ last (HQ is essentially 0)
 		// HIRE same as TRADE, only the merchandise is the natives themselves
@@ -1569,12 +1569,12 @@ public class ActionRow {
 						String rs1 = n1.getGameObject().getThisAttribute("rank");
 						if (rs1==null) rs1 = "0";
 						Integer rank1 = "HQ".equals(rs1)?new Integer(0):Integer.valueOf(rs1);
-						
+
 						RealmComponent n2 = (RealmComponent)o2;
 						String rs2 = n2.getGameObject().getThisAttribute("rank");
 						if (rs2==null) rs2 = "0";
 						Integer rank2 = "HQ".equals(rs2)?new Integer(0):Integer.valueOf(rs2);
-						
+
 						return rank1.compareTo(rank2);
 					}
 				});
@@ -1639,7 +1639,7 @@ public class ActionRow {
 					}
 				}
 			}
-			
+
 			chooser.addOption("none","Cancel Hire");
 			chooser.setVisible(true);
 			String selText = chooser.getSelectedText();
@@ -1650,7 +1650,7 @@ public class ActionRow {
 				}
 				ArrayList list = new ArrayList(chooser.getSelectedComponents());
 				ChitComponent last = (ChitComponent)list.get(list.size()-1);
-				
+
 				// Now we have the group to hire.  Need to do the Meeting table...
 				realmTable = Meeting.createMeetingTable(
 						gameHandler.getMainFrame(),
@@ -1661,7 +1661,7 @@ public class ActionRow {
 						list,
 						last.isTraveler()?RelationshipType.NEUTRAL:RelationshipType.ALLY);
 				((Meeting)realmTable).setSpecificAction("Hire");
-				
+
 				if (last.isTraveler()) {
 					// No need to roll for travelers
 					((Meeting)realmTable).hiringNatives(character,1);
@@ -1694,16 +1694,16 @@ public class ActionRow {
 		// SPX actions are ignored.  Need to ask player if they want
 		// to enchant a chit, or a tile.  The tile option would only be available if the conditions are right
 		// (right color/invocation combination available)
-		
+
 		HostPrefWrapper hostPrefs = HostPrefWrapper.findHostPrefs(gameHandler.getClient().getGameData());
-		
+
 		ArrayList<MagicChit> enchantable = new ArrayList<MagicChit>();
-		
+
 		// Chits
 		ArrayList enchantableChits = character.getEnchantableChits();
 		Collections.sort(enchantableChits);
 		enchantable.addAll(enchantableChits);
-		
+
 		if (hostPrefs.hasPref(Constants.OPT_ENHANCED_ARTIFACTS)) {
 			// Enchantable Artifacts and Books
 			for(GameObject item:character.getActiveInventory()) {
@@ -1716,7 +1716,7 @@ public class ActionRow {
 				}
 			}
 		}
-	
+
 		if (!enchantable.isEmpty()) {
 			// Determine if any of the color magic (infinite sources first) are available to enchant the tile
 			ArrayList tileEnchantableSets = new ArrayList(); // CharacterChitActionComponent[] set
@@ -1762,7 +1762,7 @@ public class ActionRow {
 					}
 				}
 			}
-			
+
 			RealmComponentOptionChooser compChooser = new RealmComponentOptionChooser(gameHandler.getMainFrame(),"Enchant which?",true);
 			int keyN = 0;
 			for (Iterator i=enchantable.iterator();i.hasNext();) {
@@ -1827,7 +1827,7 @@ public class ActionRow {
 							else {
 								enchantNumber = list.get(0);
 							}
-							
+
 							chit.enchant(enchantNumber);
 							result = "enchanted "+chit.getGameObject().getName();
 							gameHandler.updateCharacterFrames();
@@ -1867,7 +1867,7 @@ public class ActionRow {
 			cancelled = true;
 			return;
 		}
-		
+
 		// Strip out any chits that aren't strong enough to support character
 		Strength vul = character.getVulnerability();
 		ArrayList<StrengthChit> strongEnough = new ArrayList<StrengthChit>();
@@ -1876,16 +1876,16 @@ public class ActionRow {
 				strongEnough.add(sc);
 			}
 		}
-		
+
 		// Make sure Character is not too heavy
 		if (strongEnough.isEmpty()) {
 			result = "Too heavy to fly.";
 			cancelled = true;
 			return;
 		}
-		
+
 		flyStrengthChits = strongEnough;
-		
+
 		// Make sure intended target tile for flying is possible (might not be if a previously recorded move is invalid!)
 		ArrayList allAvailableTiles = new ArrayList(current.tile.getAllAdjacentTiles());
 		allAvailableTiles.add(current.tile);
@@ -1894,7 +1894,7 @@ public class ActionRow {
 			cancelled = true;
 			return;
 		}
-		
+
 		// Choose a fly chit (if necessary)
 		StrengthChit flyStrengthChit = null;
 		RealmComponentOptionChooser chooser = new RealmComponentOptionChooser(gameHandler.getMainFrame(),"Choose a FLY chit:",true);
@@ -1919,7 +1919,7 @@ public class ActionRow {
 		else {
 			fly = new Fly(flyStrengthChit);
 		}
-		
+
 		// Next, drop all items heavier than the fly chit, AND any horses, regardless of weight
 		if (!current.isBetweenTiles()) {
 			ArrayList<GameObject> toDrop = RealmUtility.dropNonFlyableStuff(gameHandler.getMainFrame(),character,fly,current);
@@ -1931,12 +1931,12 @@ public class ActionRow {
 				gameHandler.broadcast(character.getGameObject().getName(),item.getName()+" was left behind!");
 			}
 		}
-		
+
 		// Good.  Flying is possible, and will happen.  Check to see if we are using up a FLY chit.
 		if (fly!=null) {
 			fly.useFly();
 		}
-		
+
 		// Player is moved to new location
 		if (location != null) {
 			character.moveToLocation(gameHandler.getMainFrame(),location);
@@ -1947,12 +1947,12 @@ public class ActionRow {
 			}
 			gameHandler.getInspector().getMap().centerOn(character.getCurrentLocation());
 			gameHandler.updateCharacterFrames();
-			
+
 			// Character's do not stay hidden when they fly
 			if (character.isHidden()) {
 				character.setHidden(false);
 			}
-			
+
 			// Followers shouldn't follow here, unless they can fly, or they are a familiar
 			for (Iterator i=character.getActionFollowers().iterator();i.hasNext();) {
 				CharacterWrapper follower = (CharacterWrapper)i.next();
@@ -1984,7 +1984,7 @@ public class ActionRow {
 		if (tl.isInClearing()) {
 			// Add an option to open a new cache
 			chooser.generateOption("New CACHE");
-			
+
 			// Add all existing caches in clearing
 			for (Iterator i=tl.clearing.getClearingComponents().iterator();i.hasNext();) {
 				RealmComponent rc = (RealmComponent)i.next();
@@ -1995,7 +1995,7 @@ public class ActionRow {
 					}
 				}
 			}
-			
+
 			chooser.setVisible(true);
 			String sel = chooser.getSelectedText();
 			if (sel!=null) {
@@ -2012,7 +2012,7 @@ public class ActionRow {
 					go.setThisAttribute("cache_number",num);
 					go.setThisAttribute("discovery");
 					go.setThisAttribute("chit");
-					
+
 					// These attributes will enable the cache to appear on the setup card
 					HostPrefWrapper hostPrefs = HostPrefWrapper.findHostPrefs(go.getGameData());
 					go.setThisAttribute("ts_section","zcache"); // z so that it sorts to the end
@@ -2023,7 +2023,7 @@ public class ActionRow {
 						// Might as well put the B character caches on the B setup card, and so on.
 						go.setThisAttribute(Constants.BOARD_NUMBER,character.getGameObject().getThisAttribute(Constants.BOARD_NUMBER));
 					}
-					
+
 					cache = (CacheChitComponent)RealmComponent.getRealmComponent(go);
 					cache.setOwner(RealmComponent.getRealmComponent(character.getGameObject()));
 					cache.setFaceUp();
@@ -2033,7 +2033,7 @@ public class ActionRow {
 					// Existing CACHE
 					cache = (CacheChitComponent)chooser.getFirstSelectedComponent();
 				}
-				
+
 				// Trade with CACHE
 				CharacterWrapper cacheCharacter = new CharacterWrapper(cache.getGameObject());
 				CacheTransferDialog transferDialog = new CacheTransferDialog(
@@ -2042,7 +2042,7 @@ public class ActionRow {
 													cacheCharacter,
 													gameHandler.getUpdateFrameListener());
 				transferDialog.setVisible(true);
-				
+
 				// If cache is empty, delete it
 				cache.testEmpty();
 			}
@@ -2106,12 +2106,12 @@ public class ActionRow {
 	public boolean isPonyLock() {
 		return ponyLock;
 	}
-	
+
 	public boolean isFollow() {
 		ActionId id = CharacterWrapper.getIdForAction(action);
 		return (id==ActionId.Follow);
 	}
-	
+
 	public static void main(String[] args) {
 		RealmLoader loader = new RealmLoader();
 		CardComponent em = (CardComponent)RealmComponent.getRealmComponent(loader.getData().getGameObjectByName("Enchanted Meadow"));

@@ -1,16 +1,16 @@
-/* 
+/*
  * RealmSpeak is the Java application for playing the board game Magic Realm.
  * Copyright (c) 2005-2015 Robin Warren
  * E-mail: robin@dewkid.com
- * 
+ *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the License,
  * or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
  * implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with this program. If not, see
  *
  * http://www.gnu.org/licenses/
@@ -36,25 +36,25 @@ import com.robin.magic_realm.components.wrapper.SpellWrapper;
 /**
  * This class will replace the DayActions class.  It will manage the possible actions you can make during a day,
  * lock certain items in play (can't drop a treasure that you are using phases from), and even enable a nice display.
- * 
+ *
  * Some notes:
  * 	- Likely, the only items to be deactivated will be horses when entering caves.  In fact, I may "disallow" deactivation
  * 		of any object that is held by the PhaseManager during the turn (unless of course it is automatic!)
- * 	
+ *
  * 	- The only way "new" free actions will be added here, is if an inert permanent spell is activated with color magic
  */
 public class PhaseManager {
 	public static final String REGULAR_PHASE = "REGULAR_PHASE";
 	public static final String PONY_PHASE = "PONY_PHASE";
 	public static final String EXTRA_CAVE_PHASE = "X";
-	
+
 	private int basic = 0;
 	private int sunlight = 0;
 	private int sheltered = 0;
-	
+
 	private boolean usedSheltered = false;
 	private boolean usedSunlight = false;
-	
+
 	private boolean ponyLock = false;
 	private GameObject ponyObject = null;
 	private int ponyMoves = 0;
@@ -63,11 +63,11 @@ public class PhaseManager {
 	private HashLists freeActions = new HashLists(false); // These key Strings to GameObjects, where the string is like "M" or "SP" or "H", etc.
 	private ArrayList allObjects = new ArrayList();
 	private ArrayList usedObjects = new ArrayList();
-	
+
 	private boolean inactiveItemWarning = true;
-	
+
 	private CharacterWrapper character;
-	
+
 	public PhaseManager(CharacterWrapper character,GameObject ponyObject,int basic,int sunlight,int sheltered) {
 		this.character = character;
 		this.basic = basic;
@@ -118,7 +118,7 @@ public class PhaseManager {
 				}
 			}
 		}
-		
+
 		return true;
 	}
 	/**
@@ -206,7 +206,7 @@ public class PhaseManager {
 	}
 	public void updateClearing(TileLocation tl,boolean isCurrent) {
 		if (tl==null || !tl.isInClearing()) return;
-		
+
 		// Check the clearing itself!  (Blazing Light)
 		ArrayList clist = tl.clearing.getFreeActions();
 		if (clist!=null) {
@@ -228,7 +228,7 @@ public class PhaseManager {
 			// Not a cave or a dwelling?  You are outside!
 			markOutside();
 		}
-		
+
 		// Now we can search for this case (currently ONLY Toadstool Circle)
 		if (isCurrent) {
 			removeLocationSpecificFreeActions(tl);
@@ -326,18 +326,18 @@ public class PhaseManager {
 			Collections.sort(list,new Comparator() {
 				public int compare(Object o1,Object o2) {
 					int ret = 0;
-					
+
 					Requirement r1 = (Requirement)o1;
 					Requirement r2 = (Requirement)o2;
-					
+
 					GameObject go1 = r1.getGameObject();
 					GameObject go2 = r2.getGameObject();
-					
+
 					int n1 = go1.hasThisAttribute("horse")?0:1;
 					int n2 = go2.hasThisAttribute("horse")?0:1;
-					
+
 					ret = n1-n2;
-					
+
 					return ret;
 				}
 			});
@@ -369,7 +369,7 @@ public class PhaseManager {
 		Collection travelers = character.getFollowingTravelers();
 		Collection allSpells = character.getSpellExtraSources();
 		Collection clearingObjects = character.getCurrentClearingExtraActionObjects();
-		
+
 		ArrayList list = getRequiredObjects(phase);
 		if (list!=null) {
 			TileLocation current = character.getCurrentLocation();
@@ -384,7 +384,7 @@ public class PhaseManager {
 								|| travelers.contains(go)
 								|| clearingObjects.contains(go)
 								|| (allSpells!=null && allSpells.contains(go))) {
-							
+
 							return go;
 						}
 					}
@@ -395,7 +395,7 @@ public class PhaseManager {
 				}
 			}
 		}
-		
+
 		return null;
 	}
 	public void addPerformedPhase(String phase,GameObject go,boolean ponyActive,TileLocation actionLocation) {
@@ -404,7 +404,7 @@ public class PhaseManager {
 	private void _addPerformedPhase(String phase,GameObject go,boolean ponyActive,TileLocation actionLocation) {
 		// Convert detail action into plain action (M-CV3 becomes M)
 		phase = simplifyAction(phase);
-		
+
 		boolean movePhase = "M".equals(phase) || "M!".equals(phase);
 
 		if (ponyObject!=null && go!=ponyObject && ponyActive && movePhase && ponyMoves==0) {
@@ -415,11 +415,11 @@ public class PhaseManager {
 				allObjects.add(ponyObject);
 			}
 		}
-		
+
 		if (phase.indexOf('!')==1 && go==ponyObject) {
 			go = null;
 		}
-		
+
 		if (go==null) {
 			if (sheltered>0 && basic==0 && sunlight==0) { // use sheltered LAST
 				sheltered--;
@@ -445,7 +445,7 @@ public class PhaseManager {
 				freeActions.remove(trimmedPhase(phase));
 			}
 		}
-			
+
 //		if (movePhase) {
 //			removeLocationSpecificFreeActions(actionLocation);
 //		}
@@ -484,7 +484,7 @@ public class PhaseManager {
 	public int getNumberOfActionsAllowed(String action,boolean pony) {
 		// Convert detail action into plain action (M-CV3 becomes M)
 		action = simplifyAction(action);
-		
+
 		ArrayList list = getRequiredObjects(action);
 		return list==null?0:list.size();
 	}
@@ -515,7 +515,7 @@ public class PhaseManager {
 		// Convert detail action into plain action (M-CV3 becomes M)
 		action = simplifyAction(action);
 		ArrayList list = getRequiredObjects(action);
-		
+
 		// Have to check for a special case here - generalizing is just too damned complicated!
 		boolean specialCaseOverride = false;
 		if (count>1 && list!=null && list.contains(REGULAR_PHASE) && "M".equals(action) && pony) {
@@ -563,7 +563,7 @@ public class PhaseManager {
 						validateRequirement(parent,strings,needValidate.get(0),true);
 						return false;
 					}
-					
+
 					validateRequirement(parent,strings,toUse,true);
 				}
 			}
@@ -573,7 +573,7 @@ public class PhaseManager {
 	}
 	private boolean validateRequirement(JFrame parent,ArrayList<String> strings,GameObject go,boolean process) {
 		RealmComponent rc = RealmComponent.getRealmComponent(go);
-		
+
 		if (rc.isSpell()) {
 			if (!validateSpellRequirement(parent,strings,go,process)) {
 				return false;
@@ -602,7 +602,7 @@ public class PhaseManager {
 								rc.getIcon(),
 								"Don't warn me again this turn",
 								false);
-						inactiveItemWarning = !QuietOptionPane.isLastWasSilenced();
+						inactiveItemWarning = !QuietOptionPane.lastWasSilenced();
 					}
 					strings.remove(0);
 				}
@@ -658,7 +658,7 @@ public class PhaseManager {
 	}
 	private boolean manageInactiveInventoryRequirement(JFrame parent,ArrayList<String> strings,GameObject go,boolean process) {
 		RealmComponent rc = RealmComponent.getRealmComponent(go);
-		
+
 		// Okay, just need to reactivate it, if possible
 		if (process) {
 			JOptionPane.showMessageDialog(parent,
@@ -682,7 +682,7 @@ public class PhaseManager {
 								rc.getIcon(),
 								"Don't warn me again this turn",
 								false);
-						inactiveItemWarning = !QuietOptionPane.isLastWasSilenced();
+						inactiveItemWarning = !QuietOptionPane.lastWasSilenced();
 					}
 					strings.remove(0);
 				}
@@ -708,10 +708,10 @@ public class PhaseManager {
 		active.addAll(character.getFollowingTravelers());
 		inactive = character.getInactiveInventory();
 	}
-	
+
 	/**
 	 * Ignores activated object state
-	 * 
+	 *
 	 * @return	true on success
 	 */
 	public boolean forcePerformedAction(String action,boolean pony,TileLocation actionLocation) {
@@ -731,7 +731,7 @@ public class PhaseManager {
 			return false;
 		}
 		action = simplifyAction(action);
-		
+
 		boolean didit = false;
 		ArrayList list = getRequiredObjects(action);
 		if (list!=null) {
@@ -798,7 +798,7 @@ public class PhaseManager {
 //		PhaseManager pm = _getTest();
 //		PhaseManager pm1 = _getTest();
 //		GameData data = new GameData();
-		
+
 //		JOptionPane.showMessageDialog(null, new PhaseManagerIcon(pm));
 //		pm.forcePerformedAction("S", false);
 //		JOptionPane.showMessageDialog(null, new PhaseManagerIcon(pm));
@@ -808,7 +808,7 @@ public class PhaseManager {
 //		JOptionPane.showMessageDialog(null, new PhaseManagerIcon(pm));
 //		pm.forcePerformedAction("M", false);
 //		JOptionPane.showMessageDialog(null, new PhaseManagerIcon(pm));
-//		
+//
 //		pm1.remember(pm.getMemory());
 //		JOptionPane.showMessageDialog(null, new PhaseManagerIcon(pm1));
 	}
@@ -828,11 +828,11 @@ public class PhaseManager {
 		ArrayList activatedObjects = new ArrayList();
 		activatedObjects.add(thing1);
 //		activatedObjects.add(thing2);
-		
+
 		PhaseManager pm = new PhaseManager(null,null,2,0,0);
 		pm.addFreeAction("S",thing1);
 		pm.addFreeAction("H",thing2);
-		
+
 		System.out.println(pm);
 		boolean pony = true;
 //		int t=0;
@@ -884,7 +884,7 @@ public class PhaseManager {
 			this.go = go;
 			this.tl = tl;
 //			this.clearingType = null;
-			
+
 //			// Handle this special case (Ancient Telescope)
 //			String ep = go.getThisAttribute(Constants.ENHANCED_PEER);
 //			if ("M1".equals(ep)) {

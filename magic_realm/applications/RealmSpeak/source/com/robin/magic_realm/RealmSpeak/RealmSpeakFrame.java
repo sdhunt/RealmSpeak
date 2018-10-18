@@ -1,16 +1,16 @@
-/* 
+/*
  * RealmSpeak is the Java application for playing the board game Magic Realm.
  * Copyright (c) 2005-2015 Robin Warren
  * E-mail: robin@dewkid.com
- * 
+ *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the License,
  * or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
  * implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along with this program. If not, see
  *
  * http://www.gnu.org/licenses/
@@ -47,7 +47,7 @@ import com.robin.magic_realm.components.wrapper.*;
 import edu.stanford.ejalbert.BrowserLauncher;
 
 public class RealmSpeakFrame extends JFrame {
-	
+
 	private static final String[][] CHARACTER_CARDS = {
 		{"Amazon","amazon"},
 		{"Berserker","berserker"},
@@ -66,44 +66,44 @@ public class RealmSpeakFrame extends JFrame {
 		{"Wizard","wizard"},
 		{"Woods Girl","woodsgirl"},
 	};
-	
+
 	private static final String[] MISSIONS = {
 		"Escort Party",
 		"Food Ale",
 	};
-	
+
 	private static final String[] SHORT_CAMPAIGNS = {
 		"Pillage",
 		"Raid",
 	};
-	
+
 	private static final String[] LONG_CAMPAIGNS = {
 		"Conquer",
 		"War",
 		"Revolt",
 		"Quest",
 	};
-	
+
 	private ActionEvent FRAME_EVENT = new ActionEvent(this,0,"");
-	
+
 	protected WindowLayoutManager windowLayoutManager;
 	protected JDesktopPane desktop;
 	protected JLabel status;
-	
+
 	protected GameHost host = null;
 	protected RealmHostPanel realmHostFrame = null;
 	protected RealmGameHandler gameHandler = null;
-	
+
 	protected File lastSaveGame = null;
-	
+
 	protected ArrayList<RealmSpeakInternalFrame> gameControlFrames;
 	protected ArrayList<CharacterFrame> characterFrames;
-	
+
 	protected Integer characterFrameForceLayout = null;
 	protected Integer mapForceLayout = null;
-	
+
 	protected FileManager exportHTMLFileManager;
-	
+
 	protected FileFilter saveGameFileFilter = new FileFilter() {
 		public boolean accept(File f) {
 			return f.isDirectory() || (f.isFile() && f.getPath().endsWith("rsgame"));
@@ -113,7 +113,7 @@ public class RealmSpeakFrame extends JFrame {
 			return "RealmSpeak Save Files (*.rsgame)";
 		}
 	};
-	
+
 	protected JMenuBar menu;
 		protected JMenu fileMenu;
 			protected JMenuItem newGame;
@@ -121,15 +121,15 @@ public class RealmSpeakFrame extends JFrame {
 			protected JMenuItem restoreGame;
 			protected JMenuItem restoreGameBirdsong;
 			protected JMenuItem restartLastGame;
-			
+
 			protected JMenuItem saveCurrentGame;
 			protected JMenuItem endCurrentGame;
-			
+
 			protected JMenuItem exportHTMLSummary;
 			protected JMenuItem exportHTMLSummaryHighQuality;
-			
+
 			protected JMenuItem gamePlayOptions;
-			
+
 			protected JMenuItem exitRealmSpeak;
 		protected JMenu networkMenu;
 			protected JCheckBoxMenuItem networkingOption;
@@ -177,22 +177,22 @@ public class RealmSpeakFrame extends JFrame {
 			protected JMenuItem missileTable;
 			protected JMenuItem optionalCombatTables;
 			protected JMenuItem revMissileTable;
-			
+
 			protected JMenuItem curseTable;
 			protected JMenuItem wishTable;
 			protected JMenuItem popTable;
 			protected JMenuItem transformTable;
 			protected JMenuItem lostTable;
 			protected JMenuItem violentStormTable;
-			
+
 			protected JMenuItem enchantedMeadowTable;
 			protected JMenuItem toadstoolCircleTable;
 			protected JMenuItem cryptKnightTable;
-			
+
 			protected JMenuItem priceTreasuresTable;
 			protected JMenuItem priceVisitorsTable;
 			protected JMenuItem priceOtherTable;
-			
+
 			protected JMenuItem itemAndHorsesTable;
 		protected JMenu expansionTablesMenuView;
 			protected JMenuItem archaeologicalDigTable;
@@ -201,12 +201,12 @@ public class RealmSpeakFrame extends JFrame {
 			protected JMenuItem summonAnimalTable;
 			protected JMenuItem summonElementalTable;
 			protected JMenuItem captureTable;
-			
+
 		protected JMenu expansionRulesView;
 			protected JMenuItem generatorRules;
 			protected JMenuItem travelerRules;
 			protected JMenuItem guildRules;
-			
+
 		protected JMenu helpMenu;
 //			protected JMenuItem gcHelp;
 			protected JMenuItem launchCharacterEditorHelp;
@@ -215,7 +215,7 @@ public class RealmSpeakFrame extends JFrame {
 			protected JMenuItem licenseHelp;
 			protected JMenuItem creditsHelp;
 			protected JMenuItem aboutHelp;
-	
+
 	public RealmSpeakFrame() {
 		initComponents();
 		gameControlFrames = new ArrayList<RealmSpeakInternalFrame>();
@@ -231,14 +231,14 @@ public class RealmSpeakFrame extends JFrame {
 		exportHTMLFileManager = new FileManager(this,"Export Destination",null);
 		readFramePreferences();
 	}
-	
+
 	private RealmSpeakOptions realmSpeakOptions;
-	
+
 	private void readFramePreferences() {
 		realmSpeakOptions = new RealmSpeakOptions();
 		realmSpeakOptions.apply(this);
 		applyFrameSize(realmSpeakOptions.getOptions());
-		
+
 		if (networkingOption.isSelected()!=realmSpeakOptions.getOptions().getBoolean(RealmSpeakOptions.NETWORKING_OPTION)) {
 			networkingOption.doClick();
 		}
@@ -274,7 +274,7 @@ public class RealmSpeakFrame extends JFrame {
 		int height = prefMan.getInt(RealmSpeakOptions.FRAME_HEIGHT);
 		if (height==0) height = pref.height;
 		setSize(width,height);
-		
+
 		// Set game frame location
 		if (prefMan.get(RealmSpeakOptions.FRAME_X)!=null) {
 			int x = prefMan.getInt(RealmSpeakOptions.FRAME_X);
@@ -359,7 +359,7 @@ public class RealmSpeakFrame extends JFrame {
 		text.append("suitability this software for any purpose. It is provided \"as is\"<br>");
 		text.append("without express or implied warranty.<br>");
 		text.append("</font></body></html>");
-		
+
 		showHtmlWindow("RealmSpeak License",text.toString());
 	}
 	private void showCredits() {
@@ -370,7 +370,7 @@ public class RealmSpeakFrame extends JFrame {
 		Color subheaderColor = new Color(0,0,120);
 		Font listing = new Font(fontName,Font.BOLD,16);
 		Color listingColor = Color.black;
-		
+
 		ScrollingText scroller = new ScrollingText(IconFactory.findIcon("pending/logo/parchment.png"),new Insets(32,0,30,0));
 		scroller.addLine(new ScrollLine("RealmSpeak",header,headerColor,Color.black,2));
 		scroller.addLine(new ScrollLine("Design and Implementation",subheader,subheaderColor));
@@ -507,7 +507,7 @@ public class RealmSpeakFrame extends JFrame {
 		text.append(RandomNumber.getRandomNumberGenerator().toString());
 		text.append("</td></tr></table>");
 		text.append("</body></html>");
-		
+
 		showHtmlWindow("About RealmSpeak",text.toString());
 	}
 	private void showHtmlWindow(String title,String text) {
@@ -543,7 +543,7 @@ public class RealmSpeakFrame extends JFrame {
 		});
 		box.add(creditsButton);
 		panel.add(box,BorderLayout.SOUTH);
-		
+
 		FrameManager.showDefaultManagedFrame(this,panel,title,IconFactory.findIcon("images/logo/realmbox.jpg"),true);
 	}
 	private void updateControls() {
@@ -551,30 +551,30 @@ public class RealmSpeakFrame extends JFrame {
 		boolean joinedGame = gameHandler!=null;
 		boolean inBirdsong = joinedGame && (gameHandler.getGame()==null || gameHandler.getGame().getState()==GameWrapper.GAME_STATE_RECORDING);
 		boolean isAutosave = RealmHostPanel.AUTOSAVEFILE.exists();
-		
+
 		showConnectionsWindow.setEnabled(gameInProgress && !realmHostFrame.isLocal());
 		dropAllConnections.setEnabled(gameInProgress && !realmHostFrame.isLocal());
-		
+
 		showHostPrefsView.setEnabled(gameInProgress || joinedGame);
 		viewSpellList.setEnabled(joinedGame);
-		
+
 		networkingOption.setEnabled(!joinedGame && !gameInProgress);
 		newGame.setEnabled(!joinedGame && !gameInProgress);
 		loadGame.setEnabled(!joinedGame && !gameInProgress);
 		restartLastGame.setEnabled(!joinedGame && !gameInProgress && isAutosave);
 		restoreGame.setEnabled(!joinedGame && !gameInProgress && isAutosave);
 		restoreGameBirdsong.setEnabled(!joinedGame && !gameInProgress && isAutosave);
-		
+
 		saveCurrentGame.setEnabled(gameInProgress);
-		
+
 		endCurrentGame.setEnabled(gameInProgress && inBirdsong);
-		
+
 		exportHTMLSummary.setEnabled(gameInProgress || joinedGame);
 		exportHTMLSummaryHighQuality.setEnabled(gameInProgress || joinedGame);
-		
+
 		spurGameHelp.setEnabled(gameInProgress);
 		launchCharacterEditorHelp.setEnabled(!joinedGame && !gameInProgress);
-		
+
 		joinNetworkGame.setEnabled(!joinedGame);
 	}
 	public void updateMenuActions() {
@@ -613,7 +613,7 @@ public class RealmSpeakFrame extends JFrame {
 			remoteSpellActionItem.setEnabled(false);
 			cacheActionItem.setEnabled(false);
 		}
-		
+
 		RealmTurnPanel rtp = getFrontRealmTurnPanel();
 		if (rtp!=null) {
 			boolean actionsLeft = rtp.hasActionsLeft();
@@ -634,7 +634,7 @@ public class RealmSpeakFrame extends JFrame {
 			status = new JLabel(" ");
 			status.setOpaque(true);
 			status.setDoubleBuffered(true);
-		getContentPane().add(status,"South");		
+		getContentPane().add(status,"South");
 		menu = new JMenuBar();
 			fileMenu = new JMenu("File");
 			fileMenu.setMnemonic(KeyEvent.VK_F);
@@ -742,7 +742,7 @@ public class RealmSpeakFrame extends JFrame {
 							}
 						}
 					}
-				});				
+				});
 			fileMenu.add(exportHTMLSummaryHighQuality);
 			fileMenu.add(new JSeparator());
 				gamePlayOptions = new JMenuItem("Options...");
@@ -753,7 +753,7 @@ public class RealmSpeakFrame extends JFrame {
 						RealmSpeakOptionPanel panel = new RealmSpeakOptionPanel(RealmSpeakFrame.this,realmSpeakOptions);
 						panel.setVisible(true);
 					}
-				});				
+				});
 			fileMenu.add(gamePlayOptions);
 			fileMenu.add(new JSeparator());
 				exitRealmSpeak = new JMenuItem("Exit");
@@ -1055,7 +1055,7 @@ public class RealmSpeakFrame extends JFrame {
 					});
 			viewMenu.add(viewSpellList);
 				missionMenuView = new JMenu("Missions and Campaigns");
-				
+
 				missionChitView = new JMenuItem[MISSIONS.length+SHORT_CAMPAIGNS.length+LONG_CAMPAIGNS.length];
 				int n=0;
 				for (int i=0;i<MISSIONS.length;i++) {
@@ -1438,17 +1438,17 @@ public class RealmSpeakFrame extends JFrame {
 				});
 			helpMenu.add(aboutHelp);
 		menu.add(helpMenu);
-		
+
 		setJMenuBar(menu);
-		
+
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		
+
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent ev) {
 				close();
 			}
 		});
-		
+
 		updateControls();
 		updateMenuActions();
 	}
@@ -1506,18 +1506,18 @@ public class RealmSpeakFrame extends JFrame {
 							JOptionPane.WARNING_MESSAGE,
 							"I don't want to see this warning again",
 							true);
-					
+
 					if (ret==JOptionPane.YES_OPTION) {
 						if (changedFrom==null) { // only update this, if its the first time the version was changed
 							game.setVersionChangedFrom(game.getVersion());
 						}
-						game.setIgnoreVersionChange(QuietOptionPane.isLastWasSilenced());
+						game.setIgnoreVersionChange(QuietOptionPane.lastWasSilenced());
 						game.setVersion(Constants.REALM_SPEAK_VERSION);
 						RealmLogWindow.getSingleton().addMessage("Host","Original version "+game.getVersionChangedFrom()+", changed to "+game.getVersion());
 					}
 					else {
 						showStatus("Non-matching Versions");
-						return; 
+						return;
 					}
 				}
 				else if (changedFrom!=null && !game.isIgnoreVersionChange()) {
@@ -1534,14 +1534,14 @@ public class RealmSpeakFrame extends JFrame {
 							null,
 							"I don't want to see this warning again",
 							true);
-					if (QuietOptionPane.isLastWasSilenced()) {
+					if (QuietOptionPane.lastWasSilenced()) {
 						game.setIgnoreVersionChange(true);
 					}
 				}
 			}
-			
+
 			RealmUtility.getDieRollerLog(data); // Make sure this exists (important only for legacy games!)
-			
+
 			// tag all non-host characters as missing in action
 			// If playing a local game, convert all non-host characters to local
 			HostPrefWrapper hostPrefs = HostPrefWrapper.findHostPrefs(data);
@@ -1571,7 +1571,7 @@ public class RealmSpeakFrame extends JFrame {
 					}
 				}
 			}
-			
+
 			showStatus("Loading game data...");
 			RealmLoader loader = new RealmLoader();
 			makeHost(loader.getMaster(),data,netConnect);
@@ -1627,13 +1627,13 @@ public class RealmSpeakFrame extends JFrame {
 		updateForceWidths();
 		frame.setVisible(true);
 		frame.organize(desktop);
-		
+
 		// For some reason, RealmObjectPanel doesn't resize properly if there is more than one JInternalFrame on
 		// the desktop.  This solution is a hack to force it to resize.
 		Point p = frame.getLocation();
 		Dimension d = frame.getSize();
 		frame.reshape(p.x,p.y,d.width+1,d.height+1);
-		
+
 		desktop.moveToFront(frame);
 		windowLayoutManager.applyLastLayout();
 	}
@@ -1655,7 +1655,7 @@ public class RealmSpeakFrame extends JFrame {
 		if (gameHandler!=null) {
 			// Remove all character frames
 			gameHandler.removeAllCharacterFrames();
-			
+
 			if (gameHandler.getInspector()!=null) {
 				removeFrameFromDesktop(gameHandler.getInspector());
 			}
@@ -1699,7 +1699,7 @@ public class RealmSpeakFrame extends JFrame {
 		windowMenu.add(windowLayoutManager.getGetterSubMenu());
 		windowMenu.add(windowLayoutManager.getSetterSubMenu());
 		windowMenu.add(windowLayoutManager.getClearMenuItem());
-		
+
 		if (gameControlFrames!=null) {
 			windowMenu.add(new JSeparator());
 			for (RealmSpeakInternalFrame frame:gameControlFrames) {
@@ -1708,7 +1708,7 @@ public class RealmSpeakFrame extends JFrame {
 				windowMenu.add(item);
 			}
 		}
-		
+
 		if (characterFrames!=null) {
 			if (gameControlFrames.size()>0 && characterFrames.size()>0) {
 				windowMenu.add(new JSeparator());
@@ -1723,26 +1723,26 @@ public class RealmSpeakFrame extends JFrame {
 	public void hostGame(boolean netConnect) {
 		RealmUtility.resetGame();
 		desktop.removeAll();
-		
+
 		FlashingButton.setFlashEnabled(false); // at the start, disable all flashing buttons
-		
+
 		RealmSpeakInit init = new RealmSpeakInit(this);
-		
+
 		// Load XML from resources
 		showStatus("Loading game data...");
 		init.loadData();
 		resetStatus();
-		
+
 		// Get the host prefs
 		HostGameSetupDialog prefChooser = new HostGameSetupDialog(this,"Host New Game",init.getGameData());
-		
+
 		// Setup the local prefs (if any)
 		prefChooser.loadPrefsFromLocalConfiguration();
-		
+
 		prefChooser.setVisible(true);
 		if (prefChooser.getDidStart()) {
 			prefChooser.savePrefsToLocalConfiguration();
-			
+
 			// Setup the random number generator
 			HostPrefWrapper hostPrefs = HostPrefWrapper.findHostPrefs(init.getGameData());
 			if (hostPrefs.hasPref(Constants.RANDOM_R250_521)) {
@@ -1754,16 +1754,16 @@ public class RealmSpeakFrame extends JFrame {
 			else {
 				RandomNumber.setRandomNumberGenerator(RandomNumberType.System);
 			}
-			
+
 			// Make sure there is a DieRoller logger
 			DieRoller.setDieRollerLog(RealmUtility.getDieRollerLog(init.getGameData()));
-			
+
 			// Do all the pregame work
 			init.buildGame();
-			
+
 			// Save off the initial layout
 			init.getGameData().zipToFile(RealmHostPanel.INITIALSAVEFILE);
-			
+
 			// Make a host
 			makeHost(init.getMaster(),init.getGameData(),netConnect);
 //			// This works well, even though it technically doubles the resources on the host machine.
@@ -1774,16 +1774,16 @@ public class RealmSpeakFrame extends JFrame {
 	private void makeHost(GameData master,GameData data,boolean netConnect) {
 		// Fetch hostprefs
 		HostPrefWrapper hostPrefs = HostPrefWrapper.findHostPrefs(data);
-		
+
 		// Make a host
 		data.setTracksChanges(true);
-		
+
 		host = new GameHost(
 				master,
 				data,
 				hostPrefs.getGameTitle(),
 				hostPrefs.getGamePass());
-			
+
 		// Launch a game connection frame
 		realmHostFrame = new RealmHostPanel(host,netConnect);
 //		realmHostFrame.addChangeListener(new ChangeListener() {
@@ -1794,9 +1794,9 @@ public class RealmSpeakFrame extends JFrame {
 //				endCurrentGame.setEnabled(saveable);
 //			}
 //		});
-		
+
 		setTitle("Realm Speak"+(netConnect?" (Hosting)":" (Local)"));
-	
+
 		// This works well, even though it technically doubles the resources on the host machine.
 		// Probably not worth the effort to change, unless memory becomes an issue.
 		String ip = null;
@@ -1807,7 +1807,7 @@ public class RealmSpeakFrame extends JFrame {
 		}
 		// The host's personal pass is the ip address
 		startRealmGameHandler(ip,port,hostPrefs.getHostName(),hostPrefs.getGamePass(),ip,hostPrefs.getHostEmail(),true);
-		
+
 		updateControls();
 	}
 	private int readInt(String val) {
@@ -1834,7 +1834,7 @@ public class RealmSpeakFrame extends JFrame {
 			prefMan.set("joinPPass","");
 			prefMan.set("joinEMail","");
 		}
-		
+
 		MultiQueryDialog dialog = new MultiQueryDialog(RealmSpeakFrame.this,"Join Game Prefs");
 		JComboBox cb = new JComboBox(prefMan.getList("joinIpAddress").toArray());
 		cb.setEditable(true);
@@ -1870,7 +1870,7 @@ public class RealmSpeakFrame extends JFrame {
 		}
 		FlashingButton.setFlashEnabled(true); // Make sure flashing buttons are active when joining a game
 	}
-	
+
 	public void startRealmGameHandler(String ip,int port,String name,String pass,String ppass,String email,boolean hostPlayer) {
 		if (ip==null) {
 			// Non-network game (local)
@@ -1900,13 +1900,13 @@ public class RealmSpeakFrame extends JFrame {
 			else {
 				message = "This will end the current game, and kill all the connected clients.  Are you sure?";
 			}
-			
+
 			int ret = JOptionPane.showConfirmDialog(this,message,"Shut Down Current Game",JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.INFORMATION_MESSAGE);
 			if (ret!=JOptionPane.YES_OPTION) {
 				return false;
 			}
 			setTitle("Realm Speak");
-			
+
 			// Now to kill the game
 			RealmUtility.resetGame();
 			CombatFrame.resetSingleton();
@@ -1964,7 +1964,7 @@ public class RealmSpeakFrame extends JFrame {
 		}
 		return list;
 	}
-	
+
 	/**
 	 * Private inner classes
 	 */
@@ -2016,7 +2016,7 @@ public class RealmSpeakFrame extends JFrame {
 			else {
 				gameData = gameHandler.getClient().getGameData();
 			}
-			
+
 			GameObject chitObject = gameData.getGameObjectByName(chitName);
 			GoldSpecialChitComponent chit = (GoldSpecialChitComponent)RealmComponent.getRealmComponent(chitObject);
 			chit.display(mainFrame,null);
@@ -2040,7 +2040,7 @@ public class RealmSpeakFrame extends JFrame {
 					+".\nI would recommend upgrading your Java installation by visiting java.sun.com."
 					,"Old Java Installation",JOptionPane.WARNING_MESSAGE);
 		}
-		
+
 		RealmUtility.findImagesFolderOrExit();
 		RealmCharacterBuilderModel.loadAllCustomCharacters();
 		LoggingHandler.initLogging();
@@ -2048,7 +2048,7 @@ public class RealmSpeakFrame extends JFrame {
 		DebugUtility.setupArgs(args);
 		RealmSpeakFrame frame = new RealmSpeakFrame();
 		frame.setVisible(true);
-		
+
 		String gamePath = System.getProperty(DebugUtility.LAUNCH_GAME);
 		if (gamePath!=null) {
 			File file = new File(gamePath);
