@@ -37,12 +37,11 @@ public class MultiQueryDialog extends AggressiveDialog {
     private static final Dimension MAX_SIZE = new Dimension(200, 25);
 
     private final Map<String, JTextComponent> textLookup = new HashMap<>();
-    private final Map<String, JComboBox> comboLookup = new HashMap<>();
+    private final Map<String, JComboBox<?>> comboLookup = new HashMap<>();
     private final ArrayList<JTextComponent> requiredText = new ArrayList<>();
 
     private final Box layoutBox;
     private final JButton okay;
-    private final JButton cancel;
     private final UniformLabelGroup group = new UniformLabelGroup();
 
     private boolean okayPressed = false;
@@ -60,7 +59,8 @@ public class MultiQueryDialog extends AggressiveDialog {
         Box controls = Box.createHorizontalBox();
         controls.add(Box.createHorizontalGlue());
 
-        cancel = addControlButton(controls, "Cancel", ev -> {
+        // NOTE: don't need to keep a reference to the cancel button component
+        addControlButton(controls, "Cancel", ev -> {
             okayPressed = false;
             close();
         });
@@ -123,27 +123,32 @@ public class MultiQueryDialog extends AggressiveDialog {
     }
 
     /**
+     * Adds a required text input field to the dialog.
+     *
+     * @param key           the lookup key
+     * @param label         the field label
+     * @param textComponent the text component
+     */
+    public void addQueryLine(String key, String label,
+                             JTextComponent textComponent) {
+        this.addQueryLine(key, label, textComponent, true);
+    }
+
+    /**
      * Adds an optional text input field to the dialog.
      *
      * @param key           the lookup key
      * @param label         the field label
      * @param textComponent the text component
      */
-    public void addQueryLine(String key, String label, JTextComponent textComponent) {
+    public void addOptionalQueryLine(String key, String label,
+                                     JTextComponent textComponent) {
         this.addQueryLine(key, label, textComponent, false);
     }
 
-    /**
-     * Adds a text input field to the dialog.
-     *
-     * @param key           the lookup key
-     * @param label         the field label
-     * @param textComponent the text component
-     * @param requireInput  true if the text input is required (not optional)
-     */
-    public void addQueryLine(String key, String label,
-                             JTextComponent textComponent, boolean requireInput) {
-        if (requireInput) {
+    private void addQueryLine(String key, String label,
+                             JTextComponent textComponent, boolean required) {
+        if (required) {
             textComponent.addCaretListener(ev -> updateButtons());
             requiredText.add(textComponent);
         }
@@ -158,7 +163,7 @@ public class MultiQueryDialog extends AggressiveDialog {
      * @param label    the field label
      * @param comboBox the combo box component
      */
-    public void addQueryLine(String key, String label, JComboBox comboBox) {
+    public void addQueryLine(String key, String label, JComboBox<?> comboBox) {
         addComponent(label, comboBox);
         comboLookup.put(key, comboBox);
     }

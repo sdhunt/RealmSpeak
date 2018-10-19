@@ -37,19 +37,22 @@ public class MultiQueryDialogTest extends AbstractGraphicsTest {
     public void originalMain() {
         title("Original Main");
         MultiQueryDialog dialog = new MultiQueryDialog(new JFrame(), "test");
-        dialog.addQueryLine("name", "Name", new JTextField(), true);
-        dialog.addQueryLine("address", "Address", new JTextField(), true);
+        dialog.addQueryLine("name", "Name", new JTextField());
+        dialog.addQueryLine("address", "Address", new JTextField());
         JComboBox<String> cb = new JComboBox<>();
         cb.addItem("Northern");
         cb.addItem("Southern");
         cb.addItem("Norweestum");
         dialog.addQueryLine("county", "County", cb);
+        dialog.addOptionalQueryLine("nick", "Nickname", new JTextField());
+
         dialog.setVisible(true);
 
         if (dialog.saidOkay()) {
             print("   Name: [" + dialog.getText("name") + "]");
             print("Address: [" + dialog.getText("address") + "]");
             print(" County: [" + dialog.getComboChoice("county") + "]");
+            print("   Nick: [" + dialog.getText("nick") + "]");
         } else {
             print("Dialog interaction was cancelled");
         }

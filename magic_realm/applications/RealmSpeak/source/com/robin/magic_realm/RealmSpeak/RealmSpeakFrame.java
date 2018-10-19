@@ -1839,11 +1839,11 @@ public class RealmSpeakFrame extends JFrame {
 		JComboBox cb = new JComboBox(prefMan.getList("joinIpAddress").toArray());
 		cb.setEditable(true);
 		dialog.addQueryLine("ip","IP Address",cb);
-		dialog.addQueryLine("port","Port",new JTextField(prefMan.get("joinPort")),true);
-		dialog.addQueryLine("name","Name",new JTextField(prefMan.get("joinName")),true);
-		dialog.addQueryLine("pass","Game Password",new JPasswordField(prefMan.get("joinPass")),true);
-		dialog.addQueryLine("ppass","Personal Password (optional)",new JTextField(prefMan.get("joinPPass")),false);
-		dialog.addQueryLine("email","e-Mail (optional)",new JTextField(prefMan.get("joinEMail")),false);
+		dialog.addQueryLine("port","Port",new JTextField(prefMan.get("joinPort")));
+		dialog.addQueryLine("name","Name",new JTextField(prefMan.get("joinName")));
+		dialog.addQueryLine("pass","Game Password",new JPasswordField(prefMan.get("joinPass")));
+		dialog.addOptionalQueryLine("ppass","Personal Password (optional)",new JTextField(prefMan.get("joinPPass")));
+		dialog.addOptionalQueryLine("email","e-Mail (optional)",new JTextField(prefMan.get("joinEMail")));
 		dialog.setLocationRelativeTo(null);
 		dialog.setVisible(true);
 		if (readInt(dialog.getText("port"))==-1) {
