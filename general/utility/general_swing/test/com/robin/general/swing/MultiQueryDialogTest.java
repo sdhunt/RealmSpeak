@@ -39,7 +39,7 @@ public class MultiQueryDialogTest extends AbstractGraphicsTest {
         MultiQueryDialog dialog = new MultiQueryDialog(new JFrame(), "test");
         dialog.addQueryLine("name", "Name", new JTextField(), true);
         dialog.addQueryLine("address", "Address", new JTextField(), true);
-        JComboBox cb = new JComboBox();
+        JComboBox<String> cb = new JComboBox<>();
         cb.addItem("Northern");
         cb.addItem("Southern");
         cb.addItem("Norweestum");

@@ -25,7 +25,8 @@ import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A dialog that can be set up to request multiple values, using text and/or
@@ -35,10 +36,9 @@ public class MultiQueryDialog extends AggressiveDialog {
 
     private static final Dimension MAX_SIZE = new Dimension(200, 25);
 
-
-    private final Hashtable textComponents = new Hashtable();
-    private final Hashtable comboBoxes = new Hashtable();
-    private final ArrayList requiredTextInputs = new ArrayList();
+    private final Map<String, JTextComponent> textLookup = new HashMap<>();
+    private final Map<String, JComboBox> comboLookup = new HashMap<>();
+    private final ArrayList<JTextComponent> requiredText = new ArrayList<>();
 
     private final Box layoutBox;
     private final JButton okay;
@@ -93,8 +93,7 @@ public class MultiQueryDialog extends AggressiveDialog {
 
     private void updateButtons() {
         boolean allClear = true;
-        for (Object requiredComp : requiredTextInputs) {
-            JTextComponent tc = (JTextComponent) requiredComp;
+        for (JTextComponent tc : requiredText) {
             if (tc.getText().trim().length() == 0) {
                 allClear = false;
                 break;
@@ -126,8 +125,8 @@ public class MultiQueryDialog extends AggressiveDialog {
     /**
      * Adds an optional text input field to the dialog.
      *
-     * @param key the lookup key
-     * @param label the field label
+     * @param key           the lookup key
+     * @param label         the field label
      * @param textComponent the text component
      */
     public void addQueryLine(String key, String label, JTextComponent textComponent) {
@@ -137,31 +136,31 @@ public class MultiQueryDialog extends AggressiveDialog {
     /**
      * Adds a text input field to the dialog.
      *
-     * @param key the lookup key
-     * @param label the field label
+     * @param key           the lookup key
+     * @param label         the field label
      * @param textComponent the text component
-     * @param requireInput true if the text input is required (not optional)
+     * @param requireInput  true if the text input is required (not optional)
      */
     public void addQueryLine(String key, String label,
                              JTextComponent textComponent, boolean requireInput) {
         if (requireInput) {
             textComponent.addCaretListener(ev -> updateButtons());
-            requiredTextInputs.add(textComponent);
+            requiredText.add(textComponent);
         }
         addComponent(label, textComponent);
-        textComponents.put(key, textComponent);
+        textLookup.put(key, textComponent);
     }
 
     /**
      * Adds a combo box input field to the dialog.
      *
-     * @param key the lookup key
-     * @param label the field label
+     * @param key      the lookup key
+     * @param label    the field label
      * @param comboBox the combo box component
      */
     public void addQueryLine(String key, String label, JComboBox comboBox) {
         addComponent(label, comboBox);
-        comboBoxes.put(key, comboBox);
+        comboLookup.put(key, comboBox);
     }
 
     /**
@@ -172,11 +171,8 @@ public class MultiQueryDialog extends AggressiveDialog {
      * @return the text value of the field
      */
     public String getText(String key) {
-        JTextComponent textComponent = (JTextComponent) textComponents.get(key);
-        if (textComponent != null) {
-            return textComponent.getText().trim();
-        }
-        return null;
+        JTextComponent tc = textLookup.get(key);
+        return tc == null ? null : tc.getText().trim();
     }
 
     /**
@@ -187,11 +183,8 @@ public class MultiQueryDialog extends AggressiveDialog {
      * @return the selected object
      */
     public Object getComboChoice(String key) {
-        JComboBox comboBox = (JComboBox) comboBoxes.get(key);
-        if (comboBox != null) {
-            return comboBox.getSelectedItem();
-        }
-        return null;
+        JComboBox cbox = comboLookup.get(key);
+        return cbox == null ? null : cbox.getSelectedItem();
     }
 
     /**
