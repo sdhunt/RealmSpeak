@@ -47,9 +47,11 @@ public class MultiQueryDialogTest extends AbstractGraphicsTest {
         dialog.setVisible(true);
 
         if (dialog.saidOkay()) {
-            System.out.println("Name:  " + dialog.getText("name"));
-            System.out.println("Address:  " + dialog.getText("address"));
-            System.out.println("County:  " + dialog.getComboChoice("county"));
+            print("   Name: [" + dialog.getText("name") + "]");
+            print("Address: [" + dialog.getText("address") + "]");
+            print(" County: [" + dialog.getComboChoice("county") + "]");
+        } else {
+            print("Dialog interaction was cancelled");
         }
     }
 }

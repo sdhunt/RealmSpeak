@@ -23,65 +23,77 @@ package com.robin.general.swing;
 import javax.swing.*;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
 /**
- * A dialog that requests multiple values.
+ * A dialog that can be set up to request multiple values, using text and/or
+ * combo box inputs.
  */
 public class MultiQueryDialog extends AggressiveDialog {
 
-    private Hashtable textComponents = new Hashtable();
-    private Hashtable comboBoxes = new Hashtable();
-    private ArrayList requiredInputComponents = new ArrayList();
+    private static final Dimension MAX_SIZE = new Dimension(200, 25);
 
-    private Box layoutBox;
+
+    private final Hashtable textComponents = new Hashtable();
+    private final Hashtable comboBoxes = new Hashtable();
+    private final ArrayList requiredTextInputs = new ArrayList();
+
+    private final Box layoutBox;
+    private final JButton okay;
+    private final JButton cancel;
+    private final UniformLabelGroup group = new UniformLabelGroup();
+
     private boolean okayPressed = false;
 
-    protected JButton okay;
-    protected JButton cancel;
-    protected UniformLabelGroup group = new UniformLabelGroup();
-
+    /**
+     * Creates the initial dialog with okay and cancel buttons.
+     *
+     * @param parent the parent frame
+     * @param title  the dialog title
+     */
     public MultiQueryDialog(JFrame parent, String title) {
         super(parent, title);
         layoutBox = Box.createVerticalBox();
         layoutBox.add(Box.createVerticalGlue());
         Box controls = Box.createHorizontalBox();
         controls.add(Box.createHorizontalGlue());
-        cancel = new JButton("Cancel");
-        cancel.addActionListener(ev -> {
+
+        cancel = addControlButton(controls, "Cancel", ev -> {
             okayPressed = false;
             close();
         });
-        controls.add(cancel);
-        controls.add(Box.createHorizontalGlue());
-        okay = new JButton("Okay");
-        okay.addActionListener(ev -> {
+        okay = addControlButton(controls, "Okay", ev -> {
             okayPressed = true;
             close();
         });
-        controls.add(okay);
-        controls.add(Box.createHorizontalGlue());
+
         getContentPane().setLayout(new BorderLayout());
-        getContentPane().add(layoutBox, "Center");
-        getContentPane().add(controls, "South");
+        getContentPane().add(layoutBox, BorderLayout.CENTER);
+        getContentPane().add(controls, BorderLayout.SOUTH);
         getRootPane().setDefaultButton(okay);
         setModal(true);
     }
 
-    public void updateSize() {
+    private JButton addControlButton(Box controls, String text,
+                                     ActionListener callback) {
+        JButton btn = new JButton(text);
+        btn.addActionListener(callback);
+        controls.add(btn);
+        controls.add(Box.createHorizontalGlue());
+        return btn;
+    }
+
+    private void updateSize() {
         int width = group.getMaxPixelWidth() + 200;
         int height = (layoutBox.getComponentCount() + 3) * 25;
         setSize(width, height);
     }
 
-    public void close() {
-        setVisible(false);
-    }
-
     private void updateButtons() {
         boolean allClear = true;
-        for (Object requiredComp : requiredInputComponents) {
+        for (Object requiredComp : requiredTextInputs) {
             JTextComponent tc = (JTextComponent) requiredComp;
             if (tc.getText().trim().length() == 0) {
                 allClear = false;
@@ -91,11 +103,18 @@ public class MultiQueryDialog extends AggressiveDialog {
         okay.setEnabled(allClear);
     }
 
+    private void close() {
+        setVisible(false);
+    }
+
     /**
-     * Adds the component
+     * Adds a component line to the dialog, using the given label.
+     *
+     * @param label     the label
+     * @param component the component
      */
     private void addComponent(String label, JComponent component) {
-        component.setMaximumSize(new Dimension(200, 25));
+        component.setMaximumSize(MAX_SIZE);
         int count = layoutBox.getComponentCount();
         Box line = group.createLabelLine(label);
         line.add(component);
@@ -104,24 +123,54 @@ public class MultiQueryDialog extends AggressiveDialog {
         updateButtons();
     }
 
+    /**
+     * Adds an optional text input field to the dialog.
+     *
+     * @param key the lookup key
+     * @param label the field label
+     * @param textComponent the text component
+     */
     public void addQueryLine(String key, String label, JTextComponent textComponent) {
         this.addQueryLine(key, label, textComponent, false);
     }
 
-    public void addQueryLine(String key, String label, JTextComponent textComponent, boolean requireInput) {
+    /**
+     * Adds a text input field to the dialog.
+     *
+     * @param key the lookup key
+     * @param label the field label
+     * @param textComponent the text component
+     * @param requireInput true if the text input is required (not optional)
+     */
+    public void addQueryLine(String key, String label,
+                             JTextComponent textComponent, boolean requireInput) {
         if (requireInput) {
             textComponent.addCaretListener(ev -> updateButtons());
-            requiredInputComponents.add(textComponent);
+            requiredTextInputs.add(textComponent);
         }
         addComponent(label, textComponent);
         textComponents.put(key, textComponent);
     }
 
+    /**
+     * Adds a combo box input field to the dialog.
+     *
+     * @param key the lookup key
+     * @param label the field label
+     * @param comboBox the combo box component
+     */
     public void addQueryLine(String key, String label, JComboBox comboBox) {
         addComponent(label, comboBox);
         comboBoxes.put(key, comboBox);
     }
 
+    /**
+     * Returns the (trimmed) text of the text input field with the given key.
+     * If no such component is registered with the dialog, null is returned.
+     *
+     * @param key the lookup key
+     * @return the text value of the field
+     */
     public String getText(String key) {
         JTextComponent textComponent = (JTextComponent) textComponents.get(key);
         if (textComponent != null) {
@@ -130,6 +179,13 @@ public class MultiQueryDialog extends AggressiveDialog {
         return null;
     }
 
+    /**
+     * Returns the selected object of the combo box field with the given key.
+     * If no such component is registered with the dialog, null is returned.
+     *
+     * @param key the lookup key
+     * @return the selected object
+     */
     public Object getComboChoice(String key) {
         JComboBox comboBox = (JComboBox) comboBoxes.get(key);
         if (comboBox != null) {
@@ -138,6 +194,11 @@ public class MultiQueryDialog extends AggressiveDialog {
         return null;
     }
 
+    /**
+     * Returns true if the Okay button was pressed.
+     *
+     * @return true if Okay was pressed
+     */
     public boolean saidOkay() {
         return okayPressed;
     }
